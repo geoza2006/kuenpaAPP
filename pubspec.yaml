@@ -1,0 +1,27 @@
+name: kuenpa
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.11.4
+
+dependencies:
+  firebase_auth: ^6.4.0
+  firebase_core: ^4.7.0
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  url_launcher: ^6.2.1      # สำหรับกดแล้วโทรออก
+  permission_handler: ^11.0.1 # สำหรับขอสิทธิ์เข้าถึงตำแหน่ง, เบอร์โทร
+  audioplayers: ^5.2.1 # สำหรับเล่นเสียงเตือน SOS (หรือใช้ package อื่นที่ถนัด)
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/

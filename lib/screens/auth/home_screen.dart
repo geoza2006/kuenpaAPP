@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'emergency_contact_screen.dart';
+import 'report_screen.dart';
+import 'history_screen.dart';
+import 'news_screen.dart';
+import 'knowledge_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -13,13 +17,14 @@ class _HomeScreenState extends State<HomeScreen> {
   // 1. Mock Data สำหรับส่วนที่แอดมินสามารถจัดการได้ (ดึงจาก Backend ในอนาคต)
   // ---------------------------------------------------------
   
-  // ข้อมูลสไลด์บาร์ (แอดมินสามารถ เพิ่ม/ลบ/แก้ไข รูปในนี้ได้จากระบบหลังบ้าน)
+  // ข้อมูลสไลด์บาร์
   final List<String> sliderImages = [
-    'assets/images/slider_elephant.jpg', // ใส่รูปช้าง หรือดึงเป็น NetworkImage ก็ได้
-    // 'assets/images/slider_2.jpg',
+    'assets/images/slide_bang.jpg', // ใส่รูปช้าง หรือดึงเป็น NetworkImage ก็ได้
+    'assets/images/slide_animal.jpg',
+    'assets/images/slide_cocodie.jpg',
   ];
 
-  // ข้อมูลหมวดหมู่มินิเกม (แอดมินสามารถ เพิ่ม/ลบ/แก้ไข หมวดหมู่ได้)
+  // ข้อมูลหมวดหมู่มินิเกม
   final List<Map<String, String>> miniGameCategories = [
     {
       'title': 'สัตว์ป่าสงวน',
@@ -80,22 +85,37 @@ class _HomeScreenState extends State<HomeScreen> {
                 // ส่วนที่ 3: 4 ปุ่มหลัก (กริด)
                 Row(
                   children: [
-                    Expanded(child: _buildGridButton('เบอร์ติดต่อฉุกเฉิน', 'assets/images/menu_turtle.png', () {
+                    Expanded(child: _buildGridButton('เบอร์ติดต่อฉุกเฉิน', 'assets/images/turtle_main.jpg', () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => const EmergencyContactScreen()),
                       );                   
                       })),
                     const SizedBox(width: 10),
-                    Expanded(child: _buildGridButton('ประวัติการพบเจอสัตว์ป่า', 'assets/images/menu_hornbill.png', () {})),
+                    Expanded(child: _buildGridButton('ประวัติการพบเจอสัตว์ป่า', 'assets/images/bird_main.jpg', () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const HistoryScreen()),
+                      );  
+                    })),
                   ],
                 ),
                 const SizedBox(height: 10),
                 Row(
                   children: [
-                    Expanded(child: _buildGridButton('ข่าวสารสัตว์ป่า', 'assets/images/menu_tapir.png', () {})),
+                    Expanded(child: _buildGridButton('ข่าวสารสัตว์ป่า', 'assets/images/somsej_main.jpg', () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const NewsScreen()),
+                      ); 
+                    })),
                     const SizedBox(width: 10),
-                    Expanded(child: _buildGridButton('เกร็ดความรู้', 'assets/images/menu_dugong.png', () {})),
+                    Expanded(child: _buildGridButton('เกร็ดความรู้', 'assets/images/fish_main.jpg', () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const KnowledgeScreen()),
+                      );
+                    })),
                   ],
                 ),
                 const SizedBox(height: 25),
@@ -147,7 +167,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         child: FloatingActionButton(
           onPressed: () {
-            // โค้ดเปิดกล้อง / หน้าแจ้งเรื่อง
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const ReportScreen()),);
           },
           backgroundColor: const Color(0xFF1B803B), // สีเขียวสว่าง
           elevation: 0,
@@ -156,7 +176,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       bottomNavigationBar: BottomAppBar(
-        color: const Color(0xFF1E5631), // สีเขียวเข้มแบบในภาพ
+        color: const Color(0xFF1E5631), // สีเขียวเข้ม
         shape: const CircularNotchedRectangle(),
         notchMargin: 8.0,
         child: SizedBox(

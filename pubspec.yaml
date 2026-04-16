@@ -11,14 +11,17 @@ dependencies:
   firebase_core: ^4.7.0
   flutter:
     sdk: flutter
-
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
   flutter_lints: ^6.0.0
   url_launcher: ^6.2.1      # สำหรับกดแล้วโทรออก
   permission_handler: ^11.0.1 # สำหรับขอสิทธิ์เข้าถึงตำแหน่ง, เบอร์โทร
   audioplayers: ^5.2.1 # สำหรับเล่นเสียงเตือน SOS (หรือใช้ package อื่นที่ถนัด)
+  google_maps_flutter: ^2.5.3  # ✅ เพิ่มตัวนี้
+  image_picker: ^1.0.7         # ✅ เพิ่มตัวนี้ (สำหรับปุ่มกล้อง)
+  location: ^5.0.3      
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter 
 
 flutter:
   uses-material-design: true

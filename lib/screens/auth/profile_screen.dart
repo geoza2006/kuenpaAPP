@@ -241,7 +241,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ],
       ),
 
-      // --- แถบเมนูด้านล่าง (ปรับให้ปุ่มโปรไฟล์สว่างขึ้น) ---
+      /// --- แถบเมนูด้านล่าง (ปรับให้ปุ่มโปรไฟล์สว่างขึ้น) ---
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: _buildCameraButton(context),
       bottomNavigationBar: _buildBottomNavBar(context),
@@ -250,4 +250,82 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _buildCameraButton(BuildContext context) {
     return Container(
-      height: 70, width: 70
+      height: 70, width: 70, margin: const EdgeInsets.only(top: 30),
+      decoration: BoxDecoration(
+        color: Colors.white, shape: BoxShape.circle,
+        border: Border.all(color: Colors.white, width: 4), 
+      ),
+      child: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const ReportScreen()));
+        },
+        backgroundColor: const Color(0xFF1B803B),
+        elevation: 0,
+        shape: const CircleBorder(),
+        child: const Icon(Icons.camera_alt, color: Colors.white, size: 35),
+      ),
+    );
+  }
+
+  Widget _buildBottomNavBar(BuildContext context) {
+    return BottomAppBar(
+      color: const Color(0xFF1E5631),
+      shape: const CircularNotchedRectangle(),
+      notchMargin: 8.0,
+      child: SizedBox(
+        height: 60,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.home, color: Colors.white54, size: 35), // หน้าโปรไฟล์ ให้ไอคอนโฮมดรอปสีลง
+              onPressed: () {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomeScreen()),
+                  (route) => false, 
+                );
+              }
+            ),
+            const SizedBox(width: 48),
+            IconButton(
+              icon: const Icon(Icons.account_circle, color: Colors.white, size: 35), // ไอคอนโปรไฟล์สว่าง 100%
+              onPressed: () {
+                // อยู่หน้าโปรไฟล์อยู่แล้ว ไม่ต้องทำอะไร
+              }
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------
+// คลาสวาดเส้นโค้งพื้นหลังสีเขียวด้านบน
+// ---------------------------------------------------------
+class HeaderCurveClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    Path path = Path();
+    path.lineTo(0, size.height - 50); // ลากเส้นลงมาด้านซ้ายเกือบสุด
+    
+    // วาดความโค้ง (จุดควบคุม x,y และ จุดจบ x,y)
+    path.quadraticBezierTo(
+      size.width / 2, size.height, // จุดที่ดึงให้โค้ง (กึ่งกลางจอ, ล่างสุด)
+      size.width, size.height - 50, // จุดจบ (ขวาสุด)
+    );
+    
+    path.lineTo(size.width, 0); // ลากเส้นขึ้นไปมุมขวาบน
+    path.close(); // ปิด path กลับไปจุดเริ่มต้น
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
+}
+
+
+
+
+

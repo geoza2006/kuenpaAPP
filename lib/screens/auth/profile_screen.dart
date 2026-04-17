@@ -92,7 +92,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     child: Text(
                       "โปรไฟล์",
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
+                      style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 6, 73, 23)),
                     ),
                   ),
                   const SizedBox(width: 48), // ดันให้คำว่าโปรไฟล์อยู่ตรงกลาง
@@ -125,7 +125,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           backgroundColor: Colors.grey[300],
                           backgroundImage: _profileImage != null
                               ? FileImage(_profileImage!)
-                              : const AssetImage('assets/images/slide_bang.jpg') as ImageProvider, // ⚠️ เปลี่ยนเป็นรูป Default ของคุณ
+                              : const AssetImage('assets/images/profile.png') as ImageProvider, // ⚠️ เปลี่ยนเป็นรูป Default ของคุณ
                         ),
                       ),
                       // ปุ่มแก้ไขรูปภาพ

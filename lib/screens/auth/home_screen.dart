@@ -7,6 +7,7 @@ import 'knowledge_screen.dart';
 import 'mini_game_screen1.dart'; 
 import 'mini_game_screen2.dart';
 import 'mini_game_screen3.dart'; 
+import 'profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -213,14 +214,12 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(width: 48), 
               IconButton(
                 icon: const Icon(Icons.account_circle, size: 35, color: Colors.white),
-                onPressed: () {
-                  // 📌 TODO: นำคอมเมนต์ออกเมื่อสร้างหน้า ProfileScreen เสร็จแล้ว
-                  /*
+                onPressed: () {        
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => const ProfileScreen()),
                   );
-                  */
+                  
                 },
               ),
             ],

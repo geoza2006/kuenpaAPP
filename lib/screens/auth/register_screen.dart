@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);
@@ -22,15 +24,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
   // ตัวแปรจัดการภาษา (true = ไทย, false = อังกฤษ)
   bool _isThai = true;
 
-  // ฟังก์ชันตรวจสอบข้อมูลและแสดงป๊อปอัพ
-  void _register() {
+  // 📌 ตัวแปรเช็คสถานะการโหลด
+  bool _isLoading = false;
+
+  // ---------------------------------------------------------
+  // 📌 ฟังก์ชันสมัครสมาชิกด้วย Firebase
+  // ---------------------------------------------------------
+  Future<void> _register() async {
     final firstName = _firstNameController.text.trim();
     final lastName = _lastNameController.text.trim();
     final email = _emailController.text.trim();
     final password = _passwordController.text;
     final confirmPassword = _confirmPasswordController.text;
 
-    // เช็คว่ามีช่องไหนว่างหรือไม่
+    // 1. เช็คว่ามีช่องไหนว่างหรือไม่
     if (firstName.isEmpty ||
         lastName.isEmpty ||
         email.isEmpty ||
@@ -40,8 +47,87 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return;
     }
 
-    // ถ้าข้อมูลครบถ้วน ให้แสดงป๊อปอัพสำเร็จ
-    _showSuccessDialog();
+    // 2. เช็คว่ารหัสผ่านทั้งสองช่องตรงกันหรือไม่
+    if (password != confirmPassword) {
+      _showErrorDialog(_isThai ? "รหัสผ่านไม่ตรงกัน" : "Passwords do not match");
+      return;
+    }
+
+    setState(() {
+      _isLoading = true; // เริ่มหมุน Loading
+    });
+
+    try {
+      // 3. สร้างบัญชีผู้ใช้ใน Firebase Auth
+      UserCredential userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+
+      // 4. อัปเดตชื่อใน Auth ทันที
+      await userCredential.user?.updateDisplayName("$firstName $lastName");
+
+      // 5. บันทึกข้อมูลส่วนตัวและ Role ลงใน Cloud Firestore
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userCredential.user!.uid) // ใช้ UID จาก Auth เป็นรหัสอ้างอิง
+          .set({
+        'firstName': firstName,
+        'lastName': lastName,
+        'name': "$firstName $lastName", // 📌 ฟิลด์นี้แหละที่หน้า Profile จะดึงไปโชว์
+        'email': email,
+        'role': 'ผู้ใช้', // 📌 กำหนดสถานะเริ่มต้นเป็น "ผู้ใช้"
+        'createdAt': FieldValue.serverTimestamp(), // เก็บเวลาที่สมัคร
+      });
+
+      // ถ้าทุกอย่างสำเร็จ
+      setState(() {
+        _isLoading = false;
+      });
+      _showSuccessDialog();
+
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+      // ดักจับ Error จาก Firebase เช่น อีเมลซ้ำ, รหัสผ่านง่ายไป
+      String errorMessage = "เกิดข้อผิดพลาดในการสมัครสมาชิก";
+      if (e.code == 'weak-password') {
+        errorMessage = _isThai ? 'รหัสผ่านอ่อนเกินไป (ต้อง 6 ตัวขึ้นไป)' : 'The password provided is too weak.';
+      } else if (e.code == 'email-already-in-use') {
+        errorMessage = _isThai ? 'อีเมลนี้ถูกใช้งานแล้ว' : 'The account already exists for that email.';
+      } else if (e.code == 'invalid-email') {
+        errorMessage = _isThai ? 'รูปแบบอีเมลไม่ถูกต้อง' : 'The email address is badly formatted.';
+      }
+      _showErrorDialog(errorMessage);
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+      _showErrorDialog(e.toString());
+    }
+  }
+
+  // --- ป๊อปอัพ: แสดง Error ทั่วไป ---
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: const Color(0xFF9E9E9E),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          title: Text(
+            _isThai ? "แจ้งเตือน" : "Alert", 
+            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)
+          ),
+          content: Text(message, style: const TextStyle(color: Colors.white)),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(_isThai ? "ตกลง" : "OK", style: const TextStyle(color: Colors.white)),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   // --- ป๊อปอัพ: ข้อมูลไม่ครบถ้วน ---
@@ -259,7 +345,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     // โลโก้ (ใช้รูปเดียวกันกับหน้า Login)
                     Image.asset('assets/images/logo.png', height: 140),
                     
-
                     // ข้อความหัวข้อ
                     Text(
                       _isThai ? 'สมัครบัญชีผู้ใช้' : 'Register Account',
@@ -323,12 +408,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     const SizedBox(height: 30),
 
-                    // ปุ่มสมัครบัญชี
+                    // 📌 ปุ่มสมัครบัญชี
                     SizedBox(
                       width: double.infinity,
                       height: 55,
                       child: ElevatedButton(
-                        onPressed: _register, // เรียกใช้งานฟังก์ชันที่นี่
+                        onPressed: _isLoading ? null : _register, // ถ้าโหลดอยู่ให้กดไม่ได้
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF9E9E9E), // สีเทาตามแบบในรูป
                           foregroundColor: Colors.white,
@@ -337,13 +422,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        child: Text(
-                          _isThai ? 'สมัครบัญชี' : 'Register',
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                        child: _isLoading
+                            ? const SizedBox(
+                                height: 24,
+                                width: 24,
+                                child: CircularProgressIndicator(color: Colors.white, strokeWidth: 3),
+                              )
+                            : Text(
+                                _isThai ? 'สมัครบัญชี' : 'Register',
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -398,7 +489,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  // ฟังก์ชันช่วยสร้าง TextField (เพิ่มพารามิเตอร์ controller)
+  // ฟังก์ชันช่วยสร้าง TextField
   Widget _buildTextField({
     required TextEditingController controller,
     required String label,

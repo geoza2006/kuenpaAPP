@@ -18,6 +18,7 @@ dependencies:
   google_maps_flutter: ^2.5.3  # ✅ เพิ่มตัวนี้
   image_picker: ^1.0.7         # ✅ เพิ่มตัวนี้ (สำหรับปุ่มกล้อง)
   location: ^5.0.3      
+  cloud_firestore: ^6.3.0
 
 dev_dependencies:
   flutter_test:

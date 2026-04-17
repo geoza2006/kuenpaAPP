@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'home_screen.dart';
 import 'report_screen.dart';
+import 'profile_screen.dart';
 
 // --- Model สำหรับเก็บข้อมูลข่าว ---
 class NewsArticle {
@@ -347,7 +348,9 @@ class NewsDetailScreen extends StatelessWidget {
                   );
               }),
               const SizedBox(width: 40),
-              IconButton(icon: const Icon(Icons.account_circle, color: Colors.white, size: 35), onPressed: () {}),
+              IconButton(icon: const Icon(Icons.account_circle, color: Colors.white, size: 35), onPressed: () {
+                Navigator.push(context,MaterialPageRoute(builder: (context) => const ProfileScreen()),);
+              }),
             ],
           ),
         ),

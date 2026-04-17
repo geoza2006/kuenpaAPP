@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "673766512901",
+    "project_id": "kuenpaapp",
+    "storage_bucket": "kuenpaapp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:673766512901:android:67e59bf4a7fae210d33f6c",
+        "android_client_info": {
+          "package_name": "com.example.kuenpa"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDWbed7P9ds1hMWjhcYmlXGMAvFZ8rk_gQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

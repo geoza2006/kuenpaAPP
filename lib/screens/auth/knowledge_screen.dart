@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'home_screen.dart';
+import 'report_screen.dart';
+// import 'profile_screen.dart'; // 📌 เตรียมไว้สำหรับ Import หน้าโปรไฟล์ในอนาคต
 
 // =========================================================
 // --- Models สำหรับเก็บข้อมูลเกร็ดความรู้ ---
@@ -190,7 +193,14 @@ class _KnowledgeScreenState extends State<KnowledgeScreen> {
     return Container(
       height: 75, width: 75, margin: const EdgeInsets.only(top: 30),
       child: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+            Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const ReportScreen(),
+            ),
+          );
+        },
         backgroundColor: const Color(0xFF2E5B2C),
         elevation: 4,
         shape: RoundedRectangleBorder(
@@ -212,9 +222,30 @@ class _KnowledgeScreenState extends State<KnowledgeScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            IconButton(icon: const Icon(Icons.home, color: Colors.white, size: 35), onPressed: () {}),
+            IconButton(
+              icon: const Icon(Icons.home, color: Colors.white, size: 35), 
+              onPressed: () {
+                // 📌 ใช้ pushAndRemoveUntil เพื่อล้าง stack ป้องกันแอปหนัก
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomeScreen()),
+                  (route) => false, 
+                );
+              }
+            ),
             const SizedBox(width: 40),
-            IconButton(icon: const Icon(Icons.account_circle, color: Colors.white, size: 35), onPressed: () {}),
+            IconButton(
+              icon: const Icon(Icons.account_circle, color: Colors.white, size: 35), 
+              onPressed: () {
+                // 📌 TODO: นำคอมเมนต์ออกเมื่อสร้างหน้า ProfileScreen เสร็จแล้ว
+                /*
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ProfileScreen()),
+                );
+                */
+              }
+            ),
           ],
         ),
       ),
@@ -328,17 +359,24 @@ class KnowledgeDetailScreen extends StatelessWidget {
       ),
       // --- แถบเมนูด้านล่าง ---
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: _buildCameraButton(),
-      bottomNavigationBar: _buildBottomNavBar(),
+      floatingActionButton: _buildCameraButton(context),
+      bottomNavigationBar: _buildBottomNavBar(context)
     );
   }
 
-  // ผมแยก Widget ปุ่มกล้องและ Nav Bar ออกมาเพื่อให้โค้ดอ่านง่ายขึ้นครับ
-  Widget _buildCameraButton() {
+  // แยก Widget ปุ่มกล้องและ Nav Bar ออกมาเพื่อให้โค้ดอ่านง่ายขึ้นครับ
+  Widget _buildCameraButton(BuildContext context) {
     return Container(
       height: 75, width: 75, margin: const EdgeInsets.only(top: 30),
       child: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const ReportScreen(),
+            ),
+          );
+        },
         backgroundColor: const Color(0xFF2E5B2C),
         elevation: 4,
         shape: RoundedRectangleBorder(
@@ -350,7 +388,7 @@ class KnowledgeDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBottomNavBar() {
+  Widget _buildBottomNavBar(BuildContext context) {
     return BottomAppBar(
       color: const Color(0xFF2E5B2C),
       shape: const CircularNotchedRectangle(),
@@ -360,9 +398,28 @@ class KnowledgeDetailScreen extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            IconButton(icon: const Icon(Icons.home, color: Colors.white, size: 35), onPressed: () {}),
+            IconButton(
+              icon: const Icon(Icons.home, color: Colors.white, size: 35), 
+              onPressed: () {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomeScreen()),
+                  (route) => false, 
+                );
+              }
+            ),
             const SizedBox(width: 40),
-            IconButton(icon: const Icon(Icons.account_circle, color: Colors.white, size: 35), onPressed: () {}),
+            IconButton(
+              icon: const Icon(Icons.account_circle, color: Colors.white, size: 35), 
+              onPressed: () {
+                /*
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ProfileScreen()),
+                );
+                */
+              }
+            ),
           ],
         ),
       ),

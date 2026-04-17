@@ -4,27 +4,27 @@ import 'dart:async';
 // Enum สำหรับจัดการสถานะของหน้าจอ
 enum GameState { playing, correct, wrong }
 
-class MiniGameScreen extends StatefulWidget {
-  const MiniGameScreen({super.key});
+class MiniGameScreen2 extends StatefulWidget {
+  const MiniGameScreen2({super.key});
 
   @override
-  State<MiniGameScreen> createState() => _MiniGameScreenState();
+  State<MiniGameScreen2> createState() => _MiniGameScreenState();
 }
 
-class _MiniGameScreenState extends State<MiniGameScreen> {
+class _MiniGameScreenState extends State<MiniGameScreen2> {
   // สถานะเริ่มต้นคือ 'กำลังเล่น'
   GameState _gameState = GameState.playing;
 
   // --- ข้อมูลจำลองของคำถาม ---
-  final String questionImage = 'assets/images/tapir.jpg'; // ⚠️ เปลี่ยนเป็นรูปสมเสร็จของคุณ
-  final String correctAnswer = 'สมเสร็จ';
+  final String questionImage = 'assets/images/game_bird.jpg';
+  final String correctAnswer = 'นกกก';
   
   // ตัวเลือกและสีของปุ่ม
   final List<Map<String, dynamic>> options = [
-    {'text': 'สมัน', 'color': const Color(0xFFFC8F93)},    // สีชมพูอมแดง
-    {'text': 'กระซู่', 'color': const Color(0xFF90F585)},    // สีเขียวอ่อน
-    {'text': 'เลียงผา', 'color': const Color(0xFFFBFD89)},  // สีเหลืองอ่อน
-    {'text': 'สมเสร็จ', 'color': const Color(0xFFFF8BFF)}, // สีม่วงชมพู
+    {'text': 'นกกก', 'color': const Color(0xFFFC8F93)},    // สีชมพูอมแดง
+    {'text': 'นกขนหิน', 'color': const Color(0xFF90F585)},    // สีเขียวอ่อน
+    {'text': 'นกกรามช้าง', 'color': const Color(0xFFFBFD89)},  // สีเหลืองอ่อน
+    {'text': 'นกแก๊ก', 'color': const Color(0xFFFF8BFF)}, // สีม่วงชมพู
   ];
 
   // ฟังก์ชันเช็คคำตอบ
@@ -39,8 +39,8 @@ class _MiniGameScreenState extends State<MiniGameScreen> {
       }
     });
 
-    // หน่วงเวลา 2 วินาทีแล้วกลับมาหน้าเล่นเกมต่อ (หรือจะให้เปลี่ยนข้อก็ได้)
-    Timer(const Duration(seconds: 2), () {
+    // หน่วงเวลา 3 วินาทีแล้วกลับมาหน้าเล่นเกมต่อ (หรือจะให้เปลี่ยนข้อก็ได้)
+    Timer(const Duration(seconds: 3), () {
       if (mounted) {
         setState(() {
           _gameState = GameState.playing;
@@ -138,7 +138,7 @@ class _MiniGameScreenState extends State<MiniGameScreen> {
           
           // คำถาม
           const Text(
-            "นี่คือสัตว์สงวนชนิดใด ?",
+            "นี่คือนกชนิดใด ?",
             style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.black),
           ),
           const SizedBox(height: 24),

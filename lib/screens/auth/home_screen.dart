@@ -4,6 +4,9 @@ import 'report_screen.dart';
 import 'history_screen.dart';
 import 'news_screen.dart';
 import 'knowledge_screen.dart';
+import 'mini_game_screen1.dart'; 
+import 'mini_game_screen2.dart';
+import 'mini_game_screen3.dart'; 
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -19,7 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
   
   // ข้อมูลสไลด์บาร์
   final List<String> sliderImages = [
-    'assets/images/slide_bang.jpg', // ใส่รูปช้าง หรือดึงเป็น NetworkImage ก็ได้
+    'assets/images/slide_bang.jpg',
     'assets/images/slide_animal.jpg',
     'assets/images/slide_cocodie.jpg',
   ];
@@ -28,15 +31,15 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Map<String, String>> miniGameCategories = [
     {
       'title': 'สัตว์ป่าสงวน',
-      'image': 'assets/images/game_icon_1.png', // ไอคอนรวมสัตว์
+      'image': 'assets/images/game_icon_1.png', 
     },
     {
       'title': 'เต่าทะเล',
-      'image': 'assets/images/game_icon_2.png', // ไอคอนเต่าทะเล
+      'image': 'assets/images/game_icon_2.png', 
     },
     {
       'title': 'นกเงือก',
-      'image': 'assets/images/game_icon_3.png', // ไอคอนนกเงือก
+      'image': 'assets/images/game_icon_3.png', 
     },
   ];
 
@@ -46,7 +49,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      // SafeArea ช่วยไม่ให้เนื้อหาไปทับกับ Notch หรือ Status Bar ของมือถือ
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -56,14 +58,13 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 // ส่วนที่ 1: โลโก้แนวนอนด้านบนซ้าย
                 Image.asset(
-                  'assets/images/logo_main.png', // ชื่อไฟล์ตามที่คุณระบุ
+                  'assets/images/logo_main.png', 
                   height: 70,
                   fit: BoxFit.contain,
                 ),
                 const SizedBox(height: 15),
 
-                // ส่วนที่ 2: สไลด์บาร์รูปภาพ (ใช้ PageView หรือแค่ Container ถ้ารูปเดียว)
-                // ในที่นี้ทำเป็น PageView เผื่อแอดมินใส่หลายรูปให้เลื่อนได้
+                // ส่วนที่ 2: สไลด์บาร์รูปภาพ
                 SizedBox(
                   height: 200,
                   child: ClipRRect(
@@ -89,8 +90,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => const EmergencyContactScreen()),
-                      );                   
-                      })),
+                      );                  
+                    })),
                     const SizedBox(width: 10),
                     Expanded(child: _buildGridButton('ประวัติการพบเจอสัตว์ป่า', 'assets/images/bird_main.jpg', () {
                       Navigator.push(
@@ -131,22 +132,41 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(height: 10),
 
-                // ลิสต์หมวดหมู่มินิเกม (จะเพิ่มขึ้นหรือลดลงตาม List miniGameCategories ที่ดึงมาจากแอดมิน)
+                // ลิสต์หมวดหมู่มินิเกม
                 ListView.builder(
                   shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(), // ปิดการ scroll ซ้อน
+                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: miniGameCategories.length,
                   itemBuilder: (context, index) {
                     return _buildMiniGameItem(
                       miniGameCategories[index]['title']!,
                       miniGameCategories[index]['image']!,
                       () {
-                        // กดแล้วไปหน้าคำถามของหมวดหมู่นี้
+                        //2. เช็คจาก index ว่าผู้ใช้กดปุ่มไหน เพื่อให้ไปหน้าแยกกัน
+                        Widget targetScreen;
+                        
+                        if (index == 0) {
+                          // index 0 คือกล่องบนสุด (สัตว์ป่าสงวน)
+                          targetScreen = const MiniGameScreen1();
+                        } else if (index == 1) {
+                          // index 1 คือกล่องตรงกลาง (เต่าทะเล)
+                          targetScreen = const MiniGameScreen3(); // ใส่ 1 ไว้ชั่วคราวกันแอปแดง
+                        } else {
+                          // index 2 คือกล่องล่างสุด (นกเงือก)
+                          targetScreen = const MiniGameScreen2(); // ใส่ 1 ไว้ชั่วคราวกันแอปแดง
+                        }
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => targetScreen,
+                          ),
+                        );
                       },
                     );
                   },
                 ),
-                const SizedBox(height: 30), // เว้นที่ว่างให้ Bottom Navigation Bar
+                const SizedBox(height: 30),
               ],
             ),
           ),
@@ -154,7 +174,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
 
       // ---------------------------------------------------------
-      // ส่วนที่ 5: Bottom Navigation Bar แบบ Custom (มีปุ่มกล้องตรงกลาง)
+      // ส่วนที่ 5: Bottom Navigation Bar
       // ---------------------------------------------------------
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Container(
@@ -163,20 +183,20 @@ class _HomeScreenState extends State<HomeScreen> {
         decoration: BoxDecoration(
           color: Colors.white,
           shape: BoxShape.circle,
-          border: Border.all(color: Colors.white, width: 4), // ขอบสีขาวรอบปุ่ม
+          border: Border.all(color: Colors.white, width: 4), 
         ),
         child: FloatingActionButton(
           onPressed: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) => const ReportScreen()),);
           },
-          backgroundColor: const Color(0xFF1B803B), // สีเขียวสว่าง
+          backgroundColor: const Color(0xFF1B803B), 
           elevation: 0,
           shape: const CircleBorder(),
           child: const Icon(Icons.camera_alt, size: 35, color: Colors.white),
         ),
       ),
       bottomNavigationBar: BottomAppBar(
-        color: const Color(0xFF1E5631), // สีเขียวเข้ม
+        color: const Color(0xFF1E5631), 
         shape: const CircularNotchedRectangle(),
         notchMargin: 8.0,
         child: SizedBox(
@@ -184,19 +204,23 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              // ปุ่มโฮม (ซ้าย)
               IconButton(
                 icon: const Icon(Icons.home, size: 35, color: Colors.white),
                 onPressed: () {
-                  // อยู่หน้าโฮมอยู่แล้ว
+                  // หน้าโฮมอยู่แล้ว ไม่ต้องทำอะไร หรือสามารถเลื่อน Scroll กลับไปบนสุดได้
                 },
               ),
-              const SizedBox(width: 48), // เว้นที่ตรงกลางไว้ให้ปุ่มกล้อง
-              // ปุ่มโปรไฟล์ (ขวา)
+              const SizedBox(width: 48), 
               IconButton(
                 icon: const Icon(Icons.account_circle, size: 35, color: Colors.white),
                 onPressed: () {
-                  // ไปหน้าโปรไฟล์
+                  // 📌 TODO: นำคอมเมนต์ออกเมื่อสร้างหน้า ProfileScreen เสร็จแล้ว
+                  /*
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const ProfileScreen()),
+                  );
+                  */
                 },
               ),
             ],
@@ -207,10 +231,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   // ---------------------------------------------------------
-  // Widget Builder Functions (ตัวช่วยสร้าง UI เพื่อให้โค้ดสะอาด)
+  // Widget Builder Functions
   // ---------------------------------------------------------
-
-  // ฟังก์ชันสร้าง 4 ปุ่มหลัก
   Widget _buildGridButton(String title, String imagePath, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
@@ -219,11 +241,10 @@ class _HomeScreenState extends State<HomeScreen> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
           image: DecorationImage(
-            // ใช้รูปภาพเป็นพื้นหลัง (อย่าลืมเตรียมรูปเหล่านี้ไว้ในโฟลเดอร์ assets)
             image: AssetImage(imagePath), 
             fit: BoxFit.cover,
             colorFilter: ColorFilter.mode(
-              Colors.white.withOpacity(0.5), // ทำฟิลเตอร์ให้รูปดูจางลงแบบในดีไซน์ เพื่อให้เห็นตัวอักษรชัดขึ้น
+              Colors.white.withOpacity(0.5), 
               BlendMode.lighten,
             ),
           ),
@@ -245,20 +266,18 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // ฟังก์ชันสร้างแถบหมวดหมู่มินิเกม
   Widget _buildMiniGameItem(String title, String imagePath, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.only(bottom: 10), // ระยะห่างระหว่างแถว
+        margin: const EdgeInsets.only(bottom: 10),
         height: 60,
         decoration: BoxDecoration(
-          color: const Color(0xFFEBEBEB), // สีพื้นหลังเทาอ่อนแบบในดีไซน์
-          borderRadius: BorderRadius.circular(10), // มุมมนนิดๆ หรือลบออกถ้าต้องการเหลี่ยม
+          color: const Color(0xFFEBEBEB), 
+          borderRadius: BorderRadius.circular(10), 
         ),
         child: Row(
           children: [
-            // ส่วนรูปภาพด้านซ้าย
             Container(
               width: 60,
               decoration: BoxDecoration(
@@ -272,7 +291,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-            // ส่วนข้อความ
             Expanded(
               child: Center(
                 child: Text(

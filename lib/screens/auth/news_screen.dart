@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'home_screen.dart';
+import 'report_screen.dart';
 
 // --- Model สำหรับเก็บข้อมูลข่าว ---
 class NewsArticle {
@@ -171,7 +173,14 @@ class _NewsScreenState extends State<NewsScreen> {
         width: 75,
         margin: const EdgeInsets.only(top: 30),
         child: FloatingActionButton(
-          onPressed: () {},
+          onPressed: () {
+              Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const ReportScreen(),
+              ),
+            );
+          },
           backgroundColor: const Color(0xFF2E5B2C),
           elevation: 4,
           shape: RoundedRectangleBorder(
@@ -190,7 +199,15 @@ class _NewsScreenState extends State<NewsScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              IconButton(icon: const Icon(Icons.home, color: Colors.white, size: 35), onPressed: () {}),
+              IconButton(icon: const Icon(Icons.home, color: Colors.white, size: 35), onPressed: () {
+                Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const HomeScreen(),
+                ),
+                (route) => false,
+              );
+              }),
               const SizedBox(width: 40),
               IconButton(icon: const Icon(Icons.account_circle, color: Colors.white, size: 35), onPressed: () {}),
             ],
@@ -294,7 +311,14 @@ class NewsDetailScreen extends StatelessWidget {
         width: 75,
         margin: const EdgeInsets.only(top: 30),
         child: FloatingActionButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const ReportScreen(),
+              ),
+            );
+          },
           backgroundColor: const Color(0xFF2E5B2C),
           elevation: 4,
           shape: RoundedRectangleBorder(
@@ -313,7 +337,15 @@ class NewsDetailScreen extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              IconButton(icon: const Icon(Icons.home, color: Colors.white, size: 35), onPressed: () {}),
+              IconButton(icon: const Icon(Icons.home, color: Colors.white, size: 35), onPressed: () {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const HomeScreen(),
+                      ),
+                      (route) => false,
+                  );
+              }),
               const SizedBox(width: 40),
               IconButton(icon: const Icon(Icons.account_circle, color: Colors.white, size: 35), onPressed: () {}),
             ],

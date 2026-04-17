@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'home_screen.dart';
+import 'report_screen.dart';
 
 // --- สร้าง Model สำหรับจำลองข้อมูล ---
 class EncounterLocation {
@@ -231,7 +233,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
         margin: const EdgeInsets.only(top: 30),
         child: FloatingActionButton(
           onPressed: () {
-            // ไปหน้ากล้องหรือหน้ารายงาน
+            Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ReportScreen()),);
           },
           backgroundColor: const Color(0xFF2E5B2C), // สีเขียวตามดีไซน์
           elevation: 4,
@@ -256,7 +260,11 @@ class _HistoryScreenState extends State<HistoryScreen> {
               IconButton(
                 icon: const Icon(Icons.home, color: Colors.white, size: 35),
                 onPressed: () {
-                  // กลับหน้าโฮม
+                  Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomeScreen()),
+                  (route) => false, 
+                );
                 },
               ),
               const SizedBox(width: 40), // เว้นที่ให้ปุ่มกล้องตรงกลาง

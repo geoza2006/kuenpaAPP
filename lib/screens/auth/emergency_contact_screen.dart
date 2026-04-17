@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:permission_handler/permission_handler.dart';
-// import 'package:audioplayers/audioplayers.dart'; // Uncomment เมื่อติดตั้งแพ็กเกจแล้ว
+import 'report_screen.dart';
 
 class EmergencyContactScreen extends StatefulWidget {
   const EmergencyContactScreen({Key? key}) : super(key: key);
@@ -225,7 +225,12 @@ class _EmergencyContactScreenState extends State<EmergencyContactScreen> {
         ),
         child: FloatingActionButton(
           onPressed: () {
-            // โค้ดเปิดกล้อง / หน้าแจ้งเรื่อง
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const ReportScreen(),
+              ),
+            );
           },
           backgroundColor: const Color(0xFF1B803B),
           elevation: 0,

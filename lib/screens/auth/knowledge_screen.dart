@@ -107,14 +107,45 @@ class _KnowledgeScreenState extends State<KnowledgeScreen> {
     KnowledgeCategory(
       title: 'เต่าทะเลของไทย\nTHAILAND\'S SEA TURTLES',
       coverImageUrl: 'assets/images/k2_turtles.png',
-      description: 'ข้อมูลเต่าทะเลของไทย...',
-      groups: [],
+      description: 'เต่าทะเลในน่านน้ำไทยพบทั้งหมด 5 ชนิด ทุกชนิดจัดเป็นสัตว์ป่าคุ้มครอง และบางชนิด (เช่น เต่ามะเฟือง) ได้รับการยกระดับเป็นสัตว์ป่าสงวน เนื่องจากเสี่ยงต่อการสูญพันธุ์อย่างยิ่ง',
+      groups: [
+        // 📌 เติมกลุ่มและรายชื่อเต่าทะเลเข้าไปตรงนี้
+        AnimalGroup(
+          groupName: '🐢 สายพันธุ์เต่าทะเลที่พบในไทย (5 ชนิด)',
+          animals: [
+            AnimalItem(name: '1. เต่ามะเฟือง (Leatherback Turtle)', imageUrl: 'assets/images/k2_turtle1.jpg'),
+            AnimalItem(name: '2. เต่าตนุ (Green Turtle)', imageUrl: 'assets/images/k2_turtle2.jpg'),
+            AnimalItem(name: '3. เต่ากระ (Hawksbill Turtle)', imageUrl: 'assets/images/k2_turtle3.jpg'),
+            AnimalItem(name: '4. เต่าหญ้า (Olive Ridley Turtle)', imageUrl: 'assets/images/k2_turtle4.jpg'),
+            AnimalItem(name: '5. เต่าหัวค้อน (Loggerhead Turtle)', imageUrl: 'assets/images/k2_turtle5.jpg'),
+          ],
+        ),
+      ], // ปิด groups
     ),
     KnowledgeCategory(
       title: 'นกเงือกของไทย\nTHAILAND\'S HORNBILLS',
       coverImageUrl: 'assets/images/k3_hornbills.png',
-      description: 'ข้อมูลนกเงือกของไทย...',
-      groups: [],
+      description: 'นกเงือกเป็นสัญลักษณ์แห่งความรักแท้และเป็นดัชนีชี้วัดความอุดมสมบูรณ์ของผืนป่า เนื่องจากพวกมันต้องการป่าที่สมบูรณ์และต้นไม้ขนาดใหญ่ในการทำรัง ในประเทศไทยพบกระจายพันธุ์อยู่ทั่วประเทศรวมทั้งหมด 13 ชนิด ทุกชนิดจัดเป็นสัตว์ป่าคุ้มครอง',
+      groups: [
+        AnimalGroup(
+          groupName: '🦅 สายพันธุ์นกเงือกที่พบในไทย (13 ชนิด)',
+          animals: [
+            AnimalItem(name: '1. นกกก หรือ นกกาฮัง (Great Hornbill)', imageUrl: 'assets/images/k3_hornbill1.jpg'),
+            AnimalItem(name: '2. นกเงือกหัวแรด (Rhinoceros Hornbill)', imageUrl: 'assets/images/k3_hornbill2.jpg'),
+            AnimalItem(name: '3. นกเงือกหัวหงอก (White-crowned Hornbill)', imageUrl: 'assets/images/k3_hornbill3.jpg'),
+            AnimalItem(name: '4. นกชนหิน (Helmeted Hornbill)', imageUrl: 'assets/images/k3_hornbill4.jpg'),
+            AnimalItem(name: '5. นกเงือกสีน้ำตาล (Brown Hornbill)', imageUrl: 'assets/images/k3_hornbill5.jpg'),
+            AnimalItem(name: '6. นกเงือกสีน้ำตาลคอขาว (White-throated Brown Hornbill)', imageUrl: 'assets/images/k3_hornbill6.jpg'),
+            AnimalItem(name: '7. นกเงือกปากย่น (Wrinkled Hornbill)', imageUrl: 'assets/images/k3_hornbill7.jpg'),
+            AnimalItem(name: '8. นกเงือกกรามช้าง (Wreathed Hornbill)', imageUrl: 'assets/images/k3_hornbill8.jpg'),
+            AnimalItem(name: '9. นกเงือกกรามช้างปากเรียบ (Plain-pouched Hornbill)', imageUrl: 'assets/images/k3_hornbill9.jpg'),
+            AnimalItem(name: '10. นกเงือกดำ (Black Hornbill)', imageUrl: 'assets/images/k3_hornbill10.jpg'),
+            AnimalItem(name: '11. นกแก๊ก หรือ นกแกง (Oriental Pied Hornbill)', imageUrl: 'assets/images/k3_hornbill11.jpg'),
+            AnimalItem(name: '12. นกเงือกคอแดง (Rufous-necked Hornbill)', imageUrl: 'assets/images/k3_hornbill12.jpg'),
+            AnimalItem(name: '13. นกเงือกปากดำ (Bushy-crested Hornbill)', imageUrl: 'assets/images/k3_hornbill13.jpg'),
+          ],
+        ),
+      ],
     ),
   ];
 

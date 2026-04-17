@@ -54,6 +54,7 @@ class _KnowledgeScreenState extends State<KnowledgeScreen> {
           'โดยมีการอัปเดตเพิ่มเติมนกชนหินและวาฬสีน้ำเงินเข้ามาเป็นสมาชิกล่าสุดตามกฎหมาย '
           'เพื่อยกระดับการอนุรักษ์อย่างเข้มงวด',
       groups: [
+        // 📌 กลุ่มที่ 1: สัตว์เลี้ยงลูกด้วยนม
         AnimalGroup(
           groupName: '🦌 จำพวกสัตว์เลี้ยงลูกด้วยนม (15 ชนิด)',
           animals: [
@@ -61,8 +62,46 @@ class _KnowledgeScreenState extends State<KnowledgeScreen> {
             AnimalItem(name: '2. กวางผา (Burmese Goral)', imageUrl: 'assets/images/k1_animal2.jpg'),
             AnimalItem(name: '3. กูปรี หรือ โคไพร (Kouprey)', imageUrl: 'assets/images/k1_animal3.jpg'),
             AnimalItem(name: '4. เก้งหม้อ (Fea\'s Muntjac)', imageUrl: 'assets/images/k1_animal4.jpg'),
+            AnimalItem(name: '5. ควายป่า (Wild Water Buffalo)', imageUrl: 'assets/images/k1_animal5.jpg'),
+            AnimalItem(name: '6. พะยูน หรือ หมูน้ำ (Dugong)', imageUrl: 'assets/images/k1_animal6.jpg'),
+            AnimalItem(name: '7. แมวลายหินอ่อน (Marbled Cat)', imageUrl: 'assets/images/k1_animal7.jpg'),
+            AnimalItem(name: '8. แรด (Javan Rhinoceros)', imageUrl: 'assets/images/k1_animal8.jpg'),
+            AnimalItem(name: '9. ละอง หรือ ละมั่ง (Brow-antlered Deer)', imageUrl: 'assets/images/k1_animal9.jpg'),
+            AnimalItem(name: '10. เลียงผา หรือ เยือง หรือ กูรำ หรือ โครำ (Southern Serow)', imageUrl: 'assets/images/k1_animal10.jpg'),
+            AnimalItem(name: '11. วาฬบรูด้า (Bryde Whale)', imageUrl: 'assets/images/k1_animal11.jpg'),
+            AnimalItem(name: '12. วาฬโอมูระ (Omura Whale)', imageUrl: 'assets/images/k1_animal12.jpg'),
+            AnimalItem(name: '13. วาฬสีน้ำเงิน (Blue Whale)', imageUrl: 'assets/images/k1_animal13.jpg'),
+            AnimalItem(name: '14. สมัน หรือ เนื้อสมัน (Schomburgk Deer)', imageUrl: 'assets/images/k1_animal14.jpg'),
+            AnimalItem(name: '15. สมเสร็จ (Malayan Tapir)', imageUrl: 'assets/images/k1_animal15.jpg'),
           ],
-        ),
+        ), // ✅ ปิดกลุ่มที่ 1 ตรงนี้
+
+        // 📌 กลุ่มที่ 2: นก
+        AnimalGroup(
+          groupName: '🦅 จำพวกนก (4 ชนิด)',
+          animals: [
+            AnimalItem(name: '16. นกกระเรียนพันธุ์ไทย (Sarus Crane)', imageUrl: 'assets/images/k1_animal16.jpg'),
+            AnimalItem(name: '17. นกเจ้าฟ้าหญิงสิรินธร (White-eyed River Martin)', imageUrl: 'assets/images/k1_animal17.jpg'),
+            AnimalItem(name: '18. นกแต้วแล้วท้องดำ (Gurney Pitta)', imageUrl: 'assets/images/k1_animal18.jpg'),
+            AnimalItem(name: '19. นกชนหิน (Helmeted Hornbill)', imageUrl: 'assets/images/k1_animal19.jpg'),
+          ],
+        ), // ✅ ปิดกลุ่มที่ 2 ตรงนี้
+
+        // 📌 กลุ่มที่ 3: สัตว์เลื้อยคลาน
+        AnimalGroup(
+          groupName: '🐢 จำพวกสัตว์เลื้อยคลาน (1 ชนิด)',
+          animals: [
+            AnimalItem(name: '20. เต่ามะเฟือง (Leatherback Sea Turtle)', imageUrl: 'assets/images/k1_animal20.jpg'),
+          ],
+        ), // ✅ ปิดกลุ่มที่ 3 ตรงนี้
+
+        // 📌 กลุ่มที่ 4: ปลา
+        AnimalGroup(
+          groupName: '🦈 จำพวกปลา (1 ชนิด)',
+          animals: [
+            AnimalItem(name: '21. ปลาฉลามวาฬ (Whale Shark)', imageUrl: 'assets/images/k1_animal21.jpg'),
+          ],
+        ), // ✅ ปิดกลุ่มที่ 4 ตรงนี้
       ],
     ),
     KnowledgeCategory(

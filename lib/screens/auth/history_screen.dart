@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'home_screen.dart';
 import 'report_screen.dart';
+import 'profile_screen.dart';
 
 // --- สร้าง Model สำหรับจำลองข้อมูล ---
 class EncounterLocation {
@@ -271,7 +272,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
               IconButton(
                 icon: const Icon(Icons.account_circle, color: Colors.white, size: 35),
                 onPressed: () {
-                  // ไปหน้าโปรไฟล์
+                  Navigator.push(context,MaterialPageRoute(builder: (context) => const ProfileScreen()),);
                 },
               ),
             ],

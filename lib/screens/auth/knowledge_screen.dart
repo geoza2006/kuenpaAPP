@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'home_screen.dart';
 import 'report_screen.dart';
-// import 'profile_screen.dart'; // 📌 เตรียมไว้สำหรับ Import หน้าโปรไฟล์ในอนาคต
+import 'profile_screen.dart';
 
 // =========================================================
 // --- Models สำหรับเก็บข้อมูลเกร็ดความรู้ ---
@@ -482,12 +482,10 @@ class KnowledgeDetailScreen extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.account_circle, color: Colors.white, size: 35), 
               onPressed: () {
-                /*
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const ProfileScreen()),
                 );
-                */
               }
             ),
           ],

@@ -6,7 +6,7 @@ import 'dart:io';
 import 'login_screen.dart'; // 📌 อย่าลืมเปลี่ยนชื่อไฟล์ให้ตรงกับหน้า Login ของคุณ
 import 'home_screen.dart';
 import 'report_screen.dart';
-// import 'report_history_screen.dart'; // 📌 เตรียมไว้สำหรับหน้าประวัติการแจ้งเหตุส่วนตัว
+import 'report_history_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -17,9 +17,9 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   // ---------------------------------------------------------
-  // ข้อมูลจำลอง (Mock Data) สำหรับหน้าโปรไฟล์
+  // ตัวแปรข้อมูลผู้ใช้ (เปลี่ยนจาก Mock Data เป็นตัวแปรที่รอโหลด)
   // ---------------------------------------------------------
-  String userName = "นิธิศ คตดี";
+  String userName = "กำลังโหลด..."; 
   String userRole = "ผู้ใช้"; // สถานะ: ผู้ใช้, เจ้าหน้าที่, แอดมิน
   
   // จำลองสถิติที่ดึงมาจากหน้า Report
@@ -29,6 +29,50 @@ class _ProfileScreenState extends State<ProfileScreen> {
   // จัดการรูปโปรไฟล์
   File? _profileImage;
   final picker = ImagePicker();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData(); // 📌 เรียกฟังก์ชันดึงข้อมูลเมื่อเปิดหน้านี้ขึ้นมา
+  }
+
+  // ---------------------------------------------------------
+  // 📌 ฟังก์ชันดึงข้อมูลผู้ใช้จาก Firebase
+  // ---------------------------------------------------------
+  Future<void> _loadUserData() async {
+    User? currentUser = FirebaseAuth.instance.currentUser;
+    
+    if (currentUser != null) {
+      // ✅ วิธีที่ 1: ดึงจาก Firebase Auth โดยตรง (กรณีตอนสมัครใช้คำสั่ง updateDisplayName)
+      // ถ้าไม่มีชื่อที่ตั้งไว้ ระบบจะดึง Email มาแสดงแทนชั่วคราว
+      setState(() {
+        userName = currentUser.displayName ?? currentUser.email ?? "ผู้ใช้งาน (ไม่ระบุชื่อ)";
+      });
+
+      // -------------------------------------------------------
+      // 💡 วิธีที่ 2: ถ้าตอนสมัคร คุณเอาชื่อไปเซฟเก็บไว้ใน Cloud Firestore 
+      // (ลบเครื่องหมายคอมเมนต์ /* ... */ ออกเพื่อใช้งาน และอย่าลืม import 'package:cloud_firestore/cloud_firestore.dart';)
+      // -------------------------------------------------------
+      /*
+      try {
+        DocumentSnapshot userDoc = await FirebaseFirestore.instance
+            .collection('users') // 📌 เปลี่ยนเป็นชื่อ Collection ที่คุณเก็บข้อมูลผู้ใช้
+            .doc(currentUser.uid)
+            .get();
+
+        if (userDoc.exists) {
+          setState(() {
+            // 📌 เปลี่ยน 'name' และ 'role' เป็นชื่อ Field ใน Firestore ของคุณ
+            userName = userDoc.get('name') ?? currentUser.email; 
+            userRole = userDoc.get('role') ?? "ผู้ใช้"; 
+          });
+        }
+      } catch (e) {
+        print("🔥 Firestore Error: $e");
+      }
+      */
+    }
+  }
 
   // ฟังก์ชันเลือกรูปโปรไฟล์ใหม่จากแกลเลอรี
   Future<void> _pickImage() async {
@@ -40,14 +84,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  // ---------------------------------------------------------
   // ฟังก์ชันออกจากระบบ (Logout)
-  // ---------------------------------------------------------
   Future<void> _logout() async {
     try {
       await FirebaseAuth.instance.signOut();
       if (context.mounted) {
-        // ใช้ pushAndRemoveUntil เพื่อล้างหน้าต่างทั้งหมด ป้องกันการกด Back กลับมา
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => const LoginScreen()),
@@ -199,7 +240,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: GestureDetector(
                     onTap: () {
-                      // 📌 TODO: กดแล้วไปหน้าประวัติการแจ้งเหตุของตัวเอง
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const ReportHistoryScreen()),
+                      );
                     },
                     child: Container(
                       width: double.infinity,
@@ -324,8 +368,3 @@ class HeaderCurveClipper extends CustomClipper<Path> {
   @override
   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
-
-
-
-
-

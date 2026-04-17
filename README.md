@@ -1,3 +1,12 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
+# kuenpa
+
+A new Flutter project.
+=======
+# kuenpaAPP
+>>>>>>> 8196ea192955742cfed950c51a32664124c93d24
+=======
 # 📱 Kuen Pa (คืนป่า) - Wildlife Rescue App
 
 > **"เปลี่ยนคุณให้เป็นฮีโร่ ช่วยสัตว์ป่าพลัดหลงในคลิกเดียว"**
@@ -17,3 +26,4 @@
 
 1.  **นิธิศ เจริญดี (Nitis Charoendee)** 
 2.  **พิริยะกร คตดี (Piriyakorn Koddee)** 
+>>>>>>> 6dd1be1ee24d0e592535b2f8c4dec29a5bccfb8a

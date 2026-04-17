@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+// 📌 นำเข้า Firebase
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:convert';
 
 class ReportScreen extends StatefulWidget {
   const ReportScreen({super.key});
@@ -41,12 +45,76 @@ class _ReportScreenState extends State<ReportScreen> {
 
   // ฟังก์ชันถ่ายรูป/เลือกรูป
   Future getImage() async {
-    final pickedFile = await picker.pickImage(source: ImageSource.camera);
-    setState(() {
-      if (pickedFile != null) {
-        _image = File(pickedFile.path);
+  // 📌 เพิ่ม maxWidth และ maxHeight เพื่อให้รูปเล็กลงแต่ยังชัดพออ่านรู้เรื่อง
+  // และกำหนด imageQuality เพื่อบีบอัดไฟล์
+  final pickedFile = await picker.pickImage(
+    source: ImageSource.camera,
+    maxWidth: 800,      // จำกัดความกว้าง
+    maxHeight: 800,     // จำกัดความสูง
+    imageQuality: 70,   // บีบอัดคุณภาพเหลือ 70% (ช่วยลดขนาดไฟล์ได้มหาศาล)
+  );
+  
+  setState(() {
+    if (pickedFile != null) {
+      _image = File(pickedFile.path);
+    }
+  });
+  }
+
+  // --------------------------------------------------------
+  // 📌 ฟังก์ชันส่งข้อมูลเข้า Firebase
+  // --------------------------------------------------------
+Future<void> _submitReportToFirebase() async {
+    if (_titleController.text.isEmpty || _locationController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('กรุณากรอกหัวข้อและพิกัดการรายงาน')),
+      );
+      return;
+    }
+
+    Navigator.pop(context); // ปิด Popup ยืนยัน
+
+    // โชว์โหลด
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(child: CircularProgressIndicator(color: Colors.green)),
+    );
+
+    try {
+      String base64Image = '';
+      final user = FirebaseAuth.instance.currentUser;
+
+      // 📌 ถ่ายรูปมาปุ๊บ แปลงเป็นข้อความ Base64 ปั๊บ (ไม่ต้องง้อ Storage)
+      if (_image != null) {
+        final bytes = await _image!.readAsBytes();
+        base64Image = base64Encode(bytes);
       }
-    });
+
+      LatLng currentMarkerPos = _markers.isNotEmpty ? _markers.first.position : _initialPosition;
+
+      // บันทึกลง Firestore เลย
+      await FirebaseFirestore.instance.collection('reports').add({
+        'userId': user?.uid ?? 'unknown',
+        'title': _titleController.text.trim(),
+        'phone': _phoneController.text.trim(),
+        'reporterName': _nameController.text.trim(),
+        'locationText': _locationController.text.trim(),
+        'latitude': currentMarkerPos.latitude,
+        'longitude': currentMarkerPos.longitude,
+        'details': _detailController.text.trim(),
+        'imageBase64': base64Image, // 📌 เก็บเป็นตัวอักษรแทน URL รูป
+        'status': 'รอดำเนินการ',
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+
+      if (mounted) Navigator.pop(context); // ปิดโหลด
+      _showSuccessDialog(); // โชว์สำเร็จ
+
+    } catch (e) {
+      if (mounted) Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+    }
   }
 
   // --------------------------------------------------------
@@ -97,10 +165,7 @@ class _ReportScreenState extends State<ReportScreen> {
               child: const Text('ยกเลิก', style: TextStyle(color: Colors.grey, fontSize: 16)),
             ),
             ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context); // ปิด Popup ยืนยันก่อน
-                _showSuccessDialog(); // เรียก Popup สำเร็จ
-              },
+              onPressed: _submitReportToFirebase, // 📌 กดแล้วเรียกฟังก์ชันบันทึกลง Firebase
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF2E5B2C),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -114,30 +179,28 @@ class _ReportScreenState extends State<ReportScreen> {
   }
 
   // --------------------------------------------------------
-  // Popup 2: ส่งรายงานเรียบร้อยแล้ว (เหมือนในรูปเป๊ะ)
+  // Popup 2: ส่งรายงานเรียบร้อยแล้ว
   // --------------------------------------------------------
   void _showSuccessDialog() {
-    // TODO: ตรงนี้คือจุดที่คุณจะเอาคำสั่งส่งข้อมูลเข้า Firebase/Database มาใส่ในอนาคต
-    
     showDialog(
       context: context,
-      barrierDismissible: false, // บังคับให้ผู้ใช้ต้องกดปุ่ม "เสร็จสิ้น" เท่านั้น กดพื้นที่ว่างไม่ได้
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return Dialog(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           child: Container(
             padding: const EdgeInsets.all(24.0),
             decoration: BoxDecoration(
-              color: const Color(0xFFF7F9FC), // สีพื้นหลังอมฟ้านิดๆ ตามรูป
+              color: const Color(0xFFF7F9FC),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Column(
-              mainAxisSize: MainAxisSize.min, // ขนาดกล่องพอดีกับเนื้อหา
+              mainAxisSize: MainAxisSize.min,
               children: [
                 const Text(
                   'ส่งรายงานเรียบร้อยแล้ว',
                   style: TextStyle(
-                    color: Color(0xFF0F5B3A), // สีเขียวเข้มตามรูป
+                    color: Color(0xFF0F5B3A),
                     fontSize: 22,
                     fontWeight: FontWeight.w900,
                   ),
@@ -148,7 +211,7 @@ class _ReportScreenState extends State<ReportScreen> {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 16,
-                    color: Color(0xFF0F5B3A), // สีตัวหนังสือสีเขียว
+                    color: Color(0xFF0F5B3A),
                     height: 1.5,
                   ),
                 ),
@@ -158,7 +221,7 @@ class _ReportScreenState extends State<ReportScreen> {
                   height: 45,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF2A5926), // สีปุ่มเขียวเข้ม
+                      backgroundColor: const Color(0xFF2A5926),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(25),
                       ),
@@ -207,7 +270,7 @@ class _ReportScreenState extends State<ReportScreen> {
           children: [
             // --- ส่วนที่ 1: แผนที่ Google Maps ---
             SizedBox(
-              height: 350, // เพิ่มความสูงแผนที่ตามรูป
+              height: 350,
               child: GoogleMap(
                 initialCameraPosition: const CameraPosition(
                   target: _initialPosition,
@@ -215,7 +278,7 @@ class _ReportScreenState extends State<ReportScreen> {
                 ),
                 onMapCreated: (controller) => mapController = controller,
                 markers: _markers,
-                mapType: MapType.normal, // ใช้แผนที่ปกติเหมือนในรูป
+                mapType: MapType.normal,
                 onTap: (LatLng location) {
                   setState(() {
                     _markers.clear();
@@ -239,18 +302,17 @@ class _ReportScreenState extends State<ReportScreen> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // ส่วนแสดงรูปถ่าย
                       GestureDetector(
                         onTap: getImage,
                         child: Container(
                           width: 130,
                           height: 130,
                           decoration: BoxDecoration(
-                            color: const Color(0xFFC7E5B4), // สีพื้นหลังรูปสีเขียวอ่อนตามรูป
+                            color: const Color(0xFFC7E5B4),
                             borderRadius: BorderRadius.circular(15),
                           ),
                           child: _image == null
-                              ? const Icon(Icons.camera_alt, size: 50, color: Colors.black) // ไอคอนกล้องสีดำ
+                              ? const Icon(Icons.camera_alt, size: 50, color: Colors.black)
                               : ClipRRect(
                                   borderRadius: BorderRadius.circular(15),
                                   child: Image.file(_image!, fit: BoxFit.cover),
@@ -258,8 +320,6 @@ class _ReportScreenState extends State<ReportScreen> {
                         ),
                       ),
                       const SizedBox(width: 12),
-                      
-                      // ฟิลด์ข้อมูลทางขวาของรูป
                       Expanded(
                         child: Column(
                           children: [
@@ -277,7 +337,6 @@ class _ReportScreenState extends State<ReportScreen> {
                   _buildTextField("พิกัดการพบ", _locationController),
                   const SizedBox(height: 12),
                   
-                  // รายละเอียด (กล่องใหญ่)
                   TextField(
                     controller: _detailController,
                     maxLines: 5,
@@ -299,14 +358,13 @@ class _ReportScreenState extends State<ReportScreen> {
 
                   const SizedBox(height: 20),
 
-                  // ปุ่มบันทึกการรายงาน
                   SizedBox(
                     width: double.infinity,
                     height: 50,
                     child: ElevatedButton(
-                      onPressed: _showConfirmationDialog, // กดปุ๊บ โชว์ Popup ยืนยัน
+                      onPressed: _showConfirmationDialog,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF9E9E9E), // สีเทาตามรูป
+                        backgroundColor: const Color(0xFF9E9E9E),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -323,7 +381,6 @@ class _ReportScreenState extends State<ReportScreen> {
     );
   }
 
-  // Widget ช่วยสร้าง TextField แบบเอาข้อความไว้ข้างในกล่อง
   Widget _buildTextField(String hint, TextEditingController controller) {
     return TextField(
       controller: controller,

@@ -6,7 +6,7 @@ import 'dart:io';
 import 'login_screen.dart'; // 📌 อย่าลืมเปลี่ยนชื่อไฟล์ให้ตรงกับหน้า Login ของคุณ
 import 'home_screen.dart';
 import 'report_screen.dart';
-// import 'report_history_screen.dart'; // 📌 เตรียมไว้สำหรับหน้าประวัติการแจ้งเหตุส่วนตัว
+import 'report_history_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -240,7 +240,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: GestureDetector(
                     onTap: () {
-                      // 📌 TODO: กดแล้วไปหน้าประวัติการแจ้งเหตุของตัวเอง
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const ReportHistoryScreen()),
+                      );
                     },
                     child: Container(
                       width: double.infinity,

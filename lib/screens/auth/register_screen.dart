@@ -24,7 +24,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   // ตัวแปรจัดการภาษา (true = ไทย, false = อังกฤษ)
   bool _isThai = true;
 
-  // 📌 ตัวแปรเช็คสถานะการโหลด
+  // ตัวแปรเช็คสถานะการโหลด
   bool _isLoading = false;
 
   // ---------------------------------------------------------
@@ -72,11 +72,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
           .set({
         'firstName': firstName,
         'lastName': lastName,
-        'name': "$firstName $lastName", // 📌 ฟิลด์นี้แหละที่หน้า Profile จะดึงไปโชว์
+        'name': "$firstName $lastName", // ดึงไปโชว์ในหน้า Profile
         'email': email,
-        'role': 'ผู้ใช้', // 📌 กำหนดสถานะเริ่มต้นเป็น "ผู้ใช้"
+        'role': 'user', // 📌 แก้เป็นภาษาอังกฤษ 'user' เพื่อความเสถียรในการเช็คเงื่อนไข
         'createdAt': FieldValue.serverTimestamp(), // เก็บเวลาที่สมัคร
       });
+
+      // 📌 ป้องกันบั๊ก BuildContext across async gaps
+      if (!mounted) return; 
 
       // ถ้าทุกอย่างสำเร็จ
       setState(() {
@@ -85,6 +88,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
       _showSuccessDialog();
 
     } on FirebaseAuthException catch (e) {
+      if (!mounted) return; // 📌 เช็ค mounted
+      
       setState(() {
         _isLoading = false;
       });
@@ -99,6 +104,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
       }
       _showErrorDialog(errorMessage);
     } catch (e) {
+      if (!mounted) return; // 📌 เช็ค mounted
+      
       setState(() {
         _isLoading = false;
       });
@@ -137,7 +144,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       barrierDismissible: false,
       builder: (context) {
         return Dialog(
-          backgroundColor: const Color(0xFF9E9E9E), // สีเทา
+          backgroundColor: const Color(0xFF9E9E9E), 
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
@@ -174,7 +181,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.pop(context); // ปิดป๊อปอัพเพื่อไปกรอกใหม่
+                        Navigator.pop(context); 
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
@@ -192,7 +199,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     OutlinedButton(
                       onPressed: () {
-                        Navigator.pop(context); // ปิดป๊อปอัพ
+                        Navigator.pop(context); 
                       },
                       style: OutlinedButton.styleFrom(
                         foregroundColor: Colors.white,
@@ -224,7 +231,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       barrierDismissible: false,
       builder: (context) {
         return Dialog(
-          backgroundColor: const Color(0xFF9E9E9E), // สีเทา
+          backgroundColor: const Color(0xFF9E9E9E), 
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
@@ -242,7 +249,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                 ),
                 const SizedBox(height: 24),
-                // ไอคอนเครื่องหมายถูกวงกลม
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: const BoxDecoration(
@@ -273,7 +279,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                        // กลับไปหน้าแรกสุด (หน้า Login)
                         Navigator.popUntil(context, (route) => route.isFirst);
                       },
                       style: ElevatedButton.styleFrom(
@@ -292,7 +297,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     OutlinedButton(
                       onPressed: () {
-                        Navigator.pop(context); // ปิดป๊อปอัพ
+                        Navigator.pop(context); 
                       },
                       style: OutlinedButton.styleFrom(
                         foregroundColor: Colors.white,
@@ -319,7 +324,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   void dispose() {
-    // คืนหน่วยความจำ Controllers
     _firstNameController.dispose();
     _lastNameController.dispose();
     _emailController.dispose();
@@ -335,17 +339,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
       body: SafeArea(
         child: Stack(
           children: [
-            // ส่วนเนื้อหาหลัก
             Center(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // โลโก้ (ใช้รูปเดียวกันกับหน้า Login)
                     Image.asset('assets/images/logo.png', height: 140),
                     
-                    // ข้อความหัวข้อ
                     Text(
                       _isThai ? 'สมัครบัญชีผู้ใช้' : 'Register Account',
                       style: const TextStyle(
@@ -356,7 +357,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     const SizedBox(height: 30),
 
-                    // ช่องกรอกชื่อจริง
                     _buildTextField(
                       controller: _firstNameController,
                       label: _isThai ? 'ชื่อจริง' : 'First Name',
@@ -364,7 +364,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     const SizedBox(height: 16),
 
-                    // ช่องกรอกนามสกุล
                     _buildTextField(
                       controller: _lastNameController,
                       label: _isThai ? 'นามสกุล' : 'Last Name',
@@ -372,7 +371,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     const SizedBox(height: 16),
 
-                    // ช่องกรอกอีเมล
                     _buildTextField(
                       controller: _emailController,
                       label: _isThai ? 'อีเมล' : 'Email',
@@ -380,7 +378,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     const SizedBox(height: 16),
 
-                    // ช่องกรอกรหัสผ่าน
                     _buildTextField(
                       controller: _passwordController,
                       label: _isThai ? 'รหัสผ่าน' : 'Password',
@@ -394,7 +391,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     const SizedBox(height: 16),
 
-                    // ช่องกรอกยืนยันรหัสผ่าน
                     _buildTextField(
                       controller: _confirmPasswordController,
                       label: _isThai ? 'ยืนยันรหัสผ่าน' : 'Confirm Password',
@@ -408,14 +404,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     const SizedBox(height: 30),
 
-                    // 📌 ปุ่มสมัครบัญชี
                     SizedBox(
                       width: double.infinity,
                       height: 55,
                       child: ElevatedButton(
-                        onPressed: _isLoading ? null : _register, // ถ้าโหลดอยู่ให้กดไม่ได้
+                        onPressed: _isLoading ? null : _register, 
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF9E9E9E), // สีเทาตามแบบในรูป
+                          backgroundColor: const Color(0xFF9E9E9E), 
                           foregroundColor: Colors.white,
                           elevation: 0,
                           shape: RoundedRectangleBorder(
@@ -439,7 +434,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     const SizedBox(height: 16),
 
-                    // ลิงก์กลับไปหน้าล็อคอิน
                     TextButton(
                       onPressed: () {
                         Navigator.pop(context);
@@ -457,7 +451,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
             ),
 
-            // ปุ่มเปลี่ยนภาษามุมขวาบน
             Positioned(
               top: 16,
               right: 16,
@@ -489,7 +482,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  // ฟังก์ชันช่วยสร้าง TextField
   Widget _buildTextField({
     required TextEditingController controller,
     required String label,
@@ -498,7 +490,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     VoidCallback? onTogglePassword,
   }) {
     return TextFormField(
-      controller: controller, // ผูกตัวแปรให้ตรงกับช่องกรอก
+      controller: controller, 
       obscureText: obscureText,
       decoration: InputDecoration(
         labelText: label,

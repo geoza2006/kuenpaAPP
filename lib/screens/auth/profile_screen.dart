@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; // 📌 เพิ่ม Import Firestore
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
-import 'login_screen.dart'; // 📌 อย่าลืมเปลี่ยนชื่อไฟล์ให้ตรงกับหน้า Login ของคุณ
+import 'login_screen.dart'; 
 import 'home_screen.dart';
 import 'report_screen.dart';
 import 'report_history_screen.dart';
+
+// 📌 อย่าลืม Import 2 หน้านี้ที่คุณสร้างไว้
+import 'admin_manage_users.dart';
+import 'officer_dashboard.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -16,11 +21,8 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  // ---------------------------------------------------------
-  // ตัวแปรข้อมูลผู้ใช้ (เปลี่ยนจาก Mock Data เป็นตัวแปรที่รอโหลด)
-  // ---------------------------------------------------------
+  // ตัวแปรข้อมูลผู้ใช้
   String userName = "กำลังโหลด..."; 
-  String userRole = "ผู้ใช้"; // สถานะ: ผู้ใช้, เจ้าหน้าที่, แอดมิน
   
   // จำลองสถิติที่ดึงมาจากหน้า Report
   int totalReports = 4;
@@ -33,44 +35,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-    _loadUserData(); // 📌 เรียกฟังก์ชันดึงข้อมูลเมื่อเปิดหน้านี้ขึ้นมา
+    _loadUserData(); 
   }
 
-  // ---------------------------------------------------------
-  // 📌 ฟังก์ชันดึงข้อมูลผู้ใช้จาก Firebase
-  // ---------------------------------------------------------
+  // ดึงแค่ชื่อผู้ใช้จาก Firebase Auth 
+  // (ส่วน Role เราจะใช้ StreamBuilder ดึงสดๆ ด้านล่าง เพื่อให้มันอัปเดตทันที)
   Future<void> _loadUserData() async {
     User? currentUser = FirebaseAuth.instance.currentUser;
-    
     if (currentUser != null) {
-      // ✅ วิธีที่ 1: ดึงจาก Firebase Auth โดยตรง (กรณีตอนสมัครใช้คำสั่ง updateDisplayName)
-      // ถ้าไม่มีชื่อที่ตั้งไว้ ระบบจะดึง Email มาแสดงแทนชั่วคราว
       setState(() {
         userName = currentUser.displayName ?? currentUser.email ?? "ผู้ใช้งาน (ไม่ระบุชื่อ)";
       });
-
-      // -------------------------------------------------------
-      // 💡 วิธีที่ 2: ถ้าตอนสมัคร คุณเอาชื่อไปเซฟเก็บไว้ใน Cloud Firestore 
-      // (ลบเครื่องหมายคอมเมนต์ /* ... */ ออกเพื่อใช้งาน และอย่าลืม import 'package:cloud_firestore/cloud_firestore.dart';)
-      // -------------------------------------------------------
-      /*
-      try {
-        DocumentSnapshot userDoc = await FirebaseFirestore.instance
-            .collection('users') // 📌 เปลี่ยนเป็นชื่อ Collection ที่คุณเก็บข้อมูลผู้ใช้
-            .doc(currentUser.uid)
-            .get();
-
-        if (userDoc.exists) {
-          setState(() {
-            // 📌 เปลี่ยน 'name' และ 'role' เป็นชื่อ Field ใน Firestore ของคุณ
-            userName = userDoc.get('name') ?? currentUser.email; 
-            userRole = userDoc.get('role') ?? "ผู้ใช้"; 
-          });
-        }
-      } catch (e) {
-        print("🔥 Firestore Error: $e");
-      }
-      */
     }
   }
 
@@ -102,6 +77,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final currentUser = FirebaseAuth.instance.currentUser;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
@@ -111,7 +88,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             clipper: HeaderCurveClipper(),
             child: Container(
               height: 250,
-              color: const Color(0xFFC1D8B4), // สีเขียวอ่อนแบบในรูป
+              color: const Color(0xFFC1D8B4), 
             ),
           ),
 
@@ -144,151 +121,227 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
           // --- 3. เนื้อหาหลัก ---
           SafeArea(
-            child: Column(
-              children: [
-                const SizedBox(height: 70), // เว้นระยะลงมาจากแถบบน
-                
-                // รูปโปรไฟล์
-                Center(
-                  child: Stack(
-                    alignment: Alignment.bottomRight,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Colors.white, width: 4), // ขอบสีขาวรอบรูป
-                          boxShadow: [
-                            BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, 5)),
-                          ],
-                        ),
-                        child: CircleAvatar(
-                          radius: 70,
-                          backgroundColor: Colors.grey[300],
-                          backgroundImage: _profileImage != null
-                              ? FileImage(_profileImage!)
-                              : const AssetImage('assets/images/profile.png') as ImageProvider, // ⚠️ เปลี่ยนเป็นรูป Default ของคุณ
-                        ),
-                      ),
-                      // ปุ่มแก้ไขรูปภาพ
-                      GestureDetector(
-                        onTap: _pickImage,
-                        child: Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-                          child: const Icon(Icons.camera_alt, color: Colors.grey, size: 20),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 15),
-
-                // ชื่อและสถานะ
-                Text(
-                  userName,
-                  style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xFF2E5B2C)),
-                ),
-                Text(
-                  userRole, // โชว์ว่าเป็น ผู้ใช้, เจ้าหน้าที่ หรือ แอดมิน
-                  style: const TextStyle(fontSize: 16, color: Colors.grey),
-                ),
-                const SizedBox(height: 30),
-
-                // กล่องสถิติ (แจ้งเหตุแล้ว / ช่วยสัตว์ปลอดภัย)
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          height: 100,
+            child: SingleChildScrollView( // 📌 เปลี่ยนมาใช้ ScrollView เพื่อไม่ให้จอ Error ตอนปุ่มโผล่เยอะๆ
+              child: Column(
+                children: [
+                  const SizedBox(height: 70), 
+                  
+                  // รูปโปรไฟล์
+                  Center(
+                    child: Stack(
+                      alignment: Alignment.bottomRight,
+                      children: [
+                        Container(
                           decoration: BoxDecoration(
-                            color: const Color(0xFFFC8F93), // สีแดงอมชมพู
-                            borderRadius: BorderRadius.circular(15),
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.white, width: 4), 
+                            boxShadow: [
+                              BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, 5)),
+                            ],
                           ),
-                          alignment: Alignment.center,
-                          child: Text(
-                            "แจ้งเหตุแล้ว:\n$totalReports ครั้ง",
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(fontSize: 16, color: Colors.black87, fontWeight: FontWeight.w500),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 15),
-                      Expanded(
-                        child: Container(
-                          height: 100,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF90F585), // สีเขียวสว่าง
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          alignment: Alignment.center,
-                          child: Text(
-                            "ช่วยสัตว์ปลอดภัย:\n$savedAnimals ตัว",
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(fontSize: 16, color: Colors.black87, fontWeight: FontWeight.w500),
+                          child: CircleAvatar(
+                            radius: 70,
+                            backgroundColor: Colors.grey[300],
+                            backgroundImage: _profileImage != null
+                                ? FileImage(_profileImage!)
+                                : const AssetImage('assets/images/profile.png') as ImageProvider, 
                           ),
                         ),
-                      ),
-                    ],
+                        GestureDetector(
+                          onTap: _pickImage,
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+                            child: const Icon(Icons.camera_alt, color: Colors.grey, size: 20),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(height: 20),
+                  const SizedBox(height: 15),
 
-                // ปุ่มประวัติการแจ้งเหตุ
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const ReportHistoryScreen()),
+                  // ชื่อผู้ใช้
+                  Text(
+                    userName,
+                    style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xFF2E5B2C)),
+                  ),
+                  
+                  // 📌 ใช้ StreamBuilder เพื่อดึง Role และแสดงปุ่มตามสิทธิ์
+                  StreamBuilder<DocumentSnapshot>(
+                    stream: currentUser != null
+                        ? FirebaseFirestore.instance.collection('users').doc(currentUser.uid).snapshots()
+                        : const Stream.empty(),
+                    builder: (context, snapshot) {
+                      String role = 'user';
+                      String displayRole = 'ผู้ใช้ทั่วไป';
+
+                      if (snapshot.hasData && snapshot.data!.exists) {
+                        var userData = snapshot.data!.data() as Map<String, dynamic>;
+                        role = userData['role'] ?? 'user';
+                        
+                        if (role == 'admin') displayRole = 'ผู้ดูแลระบบ (Admin)';
+                        else if (role == 'officer') displayRole = 'เจ้าหน้าที่';
+                      }
+
+                      return Column(
+                        children: [
+                          // แสดงสถานะ/ยศ
+                          Text(
+                            displayRole,
+                            style: const TextStyle(fontSize: 16, color: Colors.grey, fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(height: 30),
+
+                          // กล่องสถิติ
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    height: 100,
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFFC8F93),
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      "แจ้งเหตุแล้ว:\n$totalReports ครั้ง",
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(fontSize: 16, color: Colors.black87, fontWeight: FontWeight.w500),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 15),
+                                Expanded(
+                                  child: Container(
+                                    height: 100,
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFF90F585),
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      "ช่วยสัตว์ปลอดภัย:\n$savedAnimals ตัว",
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(fontSize: 16, color: Colors.black87, fontWeight: FontWeight.w500),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 30),
+
+                          // 📌 โซนปุ่มเมนูต่างๆ
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                            child: Column(
+                              children: [
+                                // 1. ปุ่มประวัติการแจ้งเหตุ (เห็นทุกคน)
+                                _buildMenuButton(
+                                  title: "ประวัติการแจ้งเหตุ",
+                                  bgColor: const Color(0xFFEBEBEB),
+                                  textColor: Colors.black87,
+                                  onTap: () {
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => const ReportHistoryScreen()));
+                                  },
+                                ),
+                                const SizedBox(height: 15),
+
+                                // 2. ปุ่มเจ้าหน้าที่ (เห็นเฉพาะ เจ้าหน้าที่ และ แอดมิน)
+                                if (role == 'officer' || role == 'admin') ...[
+                                  _buildMenuButton(
+                                    title: "รับเรื่องแจ้งเหตุ (เจ้าหน้าที่)",
+                                    bgColor: Colors.blue[100]!,
+                                    textColor: Colors.blue[800]!,
+                                    icon: Icons.assignment_turned_in,
+                                    onTap: () {
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => const OfficerDashboardScreen()));
+                                    },
+                                  ),
+                                  const SizedBox(height: 15),
+                                ],
+
+                                // 3. ปุ่มแอดมิน (เห็นเฉพาะ แอดมิน)
+                                if (role == 'admin') ...[
+                                  _buildMenuButton(
+                                    title: "จัดการยศผู้ใช้ (แอดมิน)",
+                                    bgColor: Colors.purple[100]!,
+                                    textColor: Colors.purple[800]!,
+                                    icon: Icons.manage_accounts,
+                                    onTap: () {
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminManageUsersScreen()));
+                                    },
+                                  ),
+                                  const SizedBox(height: 15),
+                                ],
+                              ],
+                            ),
+                          ),
+                        ],
                       );
                     },
-                    child: Container(
+                  ),
+
+                  const SizedBox(height: 40),
+
+                  // ปุ่มออกจากระบบ (สีแดง)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                    child: SizedBox(
                       width: double.infinity,
-                      padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFEBEBEB), // สีเทาอ่อน
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: const Text(
-                        "ประวัติการแจ้งเหตุ",
-                        style: TextStyle(fontSize: 18, color: Colors.black87, fontWeight: FontWeight.w500),
+                      height: 50,
+                      child: ElevatedButton(
+                        onPressed: _logout, 
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        ),
+                        child: const Text("ออกจากระบบ", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
                       ),
                     ),
                   ),
-                ),
-
-                const Spacer(), // ดันปุ่มออกจากระบบไปด้านล่างสุด
-
-                // ปุ่มออกจากระบบ (สีแดง)
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 50.0),
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: ElevatedButton(
-                      onPressed: _logout, // 📌 เรียกฟังก์ชัน Logout
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                      ),
-                      child: const Text("ออกจากระบบ", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 40), // ระยะห่างจากด้านล่างก่อนถึง NavBar
-              ],
+                  const SizedBox(height: 100), // ระยะห่างเผื่อพื้นที่ให้ NavBar ด้านล่าง
+                ],
+              ),
             ),
           ),
         ],
       ),
 
-      /// --- แถบเมนูด้านล่าง (ปรับให้ปุ่มโปรไฟล์สว่างขึ้น) ---
+      /// --- แถบเมนูด้านล่าง ---
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: _buildCameraButton(context),
       bottomNavigationBar: _buildBottomNavBar(context),
+    );
+  }
+
+  // 📌 Widget ช่วยสร้างปุ่มเมนูให้เรียบร้อยและเรียกใช้ซ้ำได้
+  Widget _buildMenuButton({required String title, required Color bgColor, required Color textColor, IconData? icon, required VoidCallback onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
+        decoration: BoxDecoration(
+          color: bgColor, 
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (icon != null) ...[
+              Icon(icon, color: textColor),
+              const SizedBox(width: 10),
+            ],
+            Text(
+              title,
+              style: TextStyle(fontSize: 18, color: textColor, fontWeight: FontWeight.w500),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -322,7 +375,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             IconButton(
-              icon: const Icon(Icons.home, color: Colors.white54, size: 35), // หน้าโปรไฟล์ ให้ไอคอนโฮมดรอปสีลง
+              icon: const Icon(Icons.home, color: Colors.white54, size: 35), 
               onPressed: () {
                 Navigator.pushAndRemoveUntil(
                   context,
@@ -333,10 +386,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             const SizedBox(width: 48),
             IconButton(
-              icon: const Icon(Icons.account_circle, color: Colors.white, size: 35), // ไอคอนโปรไฟล์สว่าง 100%
-              onPressed: () {
-                // อยู่หน้าโปรไฟล์อยู่แล้ว ไม่ต้องทำอะไร
-              }
+              icon: const Icon(Icons.account_circle, color: Colors.white, size: 35), 
+              onPressed: () {}
             ),
           ],
         ),
@@ -345,23 +396,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 }
 
-// ---------------------------------------------------------
 // คลาสวาดเส้นโค้งพื้นหลังสีเขียวด้านบน
-// ---------------------------------------------------------
 class HeaderCurveClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     Path path = Path();
-    path.lineTo(0, size.height - 50); // ลากเส้นลงมาด้านซ้ายเกือบสุด
-    
-    // วาดความโค้ง (จุดควบคุม x,y และ จุดจบ x,y)
+    path.lineTo(0, size.height - 50); 
     path.quadraticBezierTo(
-      size.width / 2, size.height, // จุดที่ดึงให้โค้ง (กึ่งกลางจอ, ล่างสุด)
-      size.width, size.height - 50, // จุดจบ (ขวาสุด)
+      size.width / 2, size.height, 
+      size.width, size.height - 50, 
     );
-    
-    path.lineTo(size.width, 0); // ลากเส้นขึ้นไปมุมขวาบน
-    path.close(); // ปิด path กลับไปจุดเริ่มต้น
+    path.lineTo(size.width, 0); 
+    path.close(); 
     return path;
   }
 

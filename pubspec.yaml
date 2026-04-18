@@ -36,4 +36,4 @@ flutter:
 flutter_icons:
   android: true
   ios: true # ถ้าเผื่อทำลง iPhone ด้วย
-  image_path: "assets/icon/app_icon.png"
+  image_path: "assets/images/app_icon.png"

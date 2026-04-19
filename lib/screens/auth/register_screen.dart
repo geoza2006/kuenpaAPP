@@ -21,15 +21,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
   
-  // ตัวแปรจัดการภาษา (true = ไทย, false = อังกฤษ)
+  // ตัวแปรจัดการภาษา
   bool _isThai = true;
 
   // ตัวแปรเช็คสถานะการโหลด
   bool _isLoading = false;
 
-  // ---------------------------------------------------------
-  // 📌 ฟังก์ชันสมัครสมาชิกด้วย Firebase
-  // ---------------------------------------------------------
+  //ฟังก์ชันสมัครสมาชิกด้วย Firebase
   Future<void> _register() async {
     final firstName = _firstNameController.text.trim();
     final lastName = _lastNameController.text.trim();
@@ -37,7 +35,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final password = _passwordController.text;
     final confirmPassword = _confirmPasswordController.text;
 
-    // 1. เช็คว่ามีช่องไหนว่างหรือไม่
+    // เช็คว่ามีช่องไหนว่าง
     if (firstName.isEmpty ||
         lastName.isEmpty ||
         email.isEmpty ||
@@ -47,7 +45,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return;
     }
 
-    // 2. เช็คว่ารหัสผ่านทั้งสองช่องตรงกันหรือไม่
+    //เช็คว่ารหัสผ่านทั้งสองช่องตรงกันไหม
     if (password != confirmPassword) {
       _showErrorDialog(_isThai ? "รหัสผ่านไม่ตรงกัน" : "Passwords do not match");
       return;
@@ -58,14 +56,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
     });
 
     try {
-      // 3. สร้างบัญชีผู้ใช้ใน Firebase Auth
+      //สร้างบัญชีผู้ใช้ใน Firebase Auth
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
 
-      // 4. อัปเดตชื่อใน Auth ทันที
+      //อัปเดตชื่อใน Auth
       await userCredential.user?.updateDisplayName("$firstName $lastName");
 
-      // 5. บันทึกข้อมูลส่วนตัวและ Role ลงใน Cloud Firestore
+      // บันทึกข้อมูลส่วนตัวและ Role ลงใน Cloud Firestore
       await FirebaseFirestore.instance
           .collection('users')
           .doc(userCredential.user!.uid) // ใช้ UID จาก Auth เป็นรหัสอ้างอิง
@@ -74,14 +72,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
         'lastName': lastName,
         'name': "$firstName $lastName", // ดึงไปโชว์ในหน้า Profile
         'email': email,
-        'role': 'user', // 📌 แก้เป็นภาษาอังกฤษ 'user' เพื่อความเสถียรในการเช็คเงื่อนไข
+        'role': 'user', //
         'createdAt': FieldValue.serverTimestamp(), // เก็บเวลาที่สมัคร
       });
 
-      // 📌 ป้องกันบั๊ก BuildContext across async gaps
       if (!mounted) return; 
 
-      // ถ้าทุกอย่างสำเร็จ
       setState(() {
         _isLoading = false;
       });
@@ -93,7 +89,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       setState(() {
         _isLoading = false;
       });
-      // ดักจับ Error จาก Firebase เช่น อีเมลซ้ำ, รหัสผ่านง่ายไป
+      // ดักจับ Error จาก Firebase
       String errorMessage = "เกิดข้อผิดพลาดในการสมัครสมาชิก";
       if (e.code == 'weak-password') {
         errorMessage = _isThai ? 'รหัสผ่านอ่อนเกินไป (ต้อง 6 ตัวขึ้นไป)' : 'The password provided is too weak.';
@@ -113,7 +109,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
-  // --- ป๊อปอัพ: แสดง Error ทั่วไป ---
+  // ป๊อปอัพแสดง Error ทั่วไป
   void _showErrorDialog(String message) {
     showDialog(
       context: context,
@@ -137,7 +133,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  // --- ป๊อปอัพ: ข้อมูลไม่ครบถ้วน ---
+  // ป๊อปอัพข้อมูลไม่ครบถ้วน
   void _showIncompleteDialog() {
     showDialog(
       context: context,
@@ -224,7 +220,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  // --- ป๊อปอัพ: สมัครสมาชิกสำเร็จ ---
+  // ป๊อปอัพสมัครสมาชิกสำเร็จ
   void _showSuccessDialog() {
     showDialog(
       context: context,

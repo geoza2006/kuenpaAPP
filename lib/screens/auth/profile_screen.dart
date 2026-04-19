@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart'; // 📌 เพิ่ม Import Firestore
+import 'package:cloud_firestore/cloud_firestore.dart'; 
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-
 import 'login_screen.dart'; 
 import 'home_screen.dart';
 import 'report_screen.dart';
 import 'report_history_screen.dart';
-
-// 📌 อย่าลืม Import 2 หน้านี้ที่คุณสร้างไว้
 import 'admin_manage_users.dart';
 import 'officer_dashboard.dart';
 
@@ -38,8 +35,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _loadUserData(); 
   }
 
-  // ดึงแค่ชื่อผู้ใช้จาก Firebase Auth 
-  // (ส่วน Role เราจะใช้ StreamBuilder ดึงสดๆ ด้านล่าง เพื่อให้มันอัปเดตทันที)
+  // ดึงชื่อผู้ใช้จาก Firebase Auth 
   Future<void> _loadUserData() async {
     User? currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser != null) {
@@ -49,7 +45,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  // ฟังก์ชันเลือกรูปโปรไฟล์ใหม่จากแกลเลอรี
+  // ฟังก์ชันเลือกรูปโปรไฟล์ใหม่
   Future<void> _pickImage() async {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
@@ -59,7 +55,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  // ฟังก์ชันออกจากระบบ (Logout)
+  // ฟังก์ชันออกจากระบบ
   Future<void> _logout() async {
     try {
       await FirebaseAuth.instance.signOut();
@@ -92,7 +88,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ),
 
-          // --- 2. ปุ่มย้อนกลับ และคำว่า "โปรไฟล์" ---
+          // ปุ่มย้อนกลับ
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
@@ -119,7 +115,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ),
 
-          // --- 3. เนื้อหาหลัก ---
+          //เนื้อหาหลัก
           SafeArea(
             child: SingleChildScrollView( // 📌 เปลี่ยนมาใช้ ScrollView เพื่อไม่ให้จอ Error ตอนปุ่มโผล่เยอะๆ
               child: Column(
@@ -166,7 +162,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xFF2E5B2C)),
                   ),
                   
-                  // 📌 ใช้ StreamBuilder เพื่อดึง Role และแสดงปุ่มตามสิทธิ์
+                  //ดึง Role และแสดงปุ่มตามสิทธิ์
                   StreamBuilder<DocumentSnapshot>(
                     stream: currentUser != null
                         ? FirebaseFirestore.instance.collection('users').doc(currentUser.uid).snapshots()
@@ -185,7 +181,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                       return Column(
                         children: [
-                          // แสดงสถานะ/ยศ
+                          // แสดงสถานะ
                           Text(
                             displayRole,
                             style: const TextStyle(fontSize: 16, color: Colors.grey, fontWeight: FontWeight.bold),
@@ -233,7 +229,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           const SizedBox(height: 30),
 
-                          // 📌 โซนปุ่มเมนูต่างๆ
+                          //โซนปุ่มเมนูต่างๆ
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20.0),
                             child: Column(
@@ -249,7 +245,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ),
                                 const SizedBox(height: 15),
 
-                                // 2. ปุ่มเจ้าหน้าที่ (เห็นเฉพาะ เจ้าหน้าที่ และ แอดมิน)
+                                // ปุ่มเจ้าหน้าที่
                                 if (role == 'officer' || role == 'admin') ...[
                                   _buildMenuButton(
                                     title: "รับเรื่องแจ้งเหตุ (เจ้าหน้าที่)",
@@ -263,7 +259,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   const SizedBox(height: 15),
                                 ],
 
-                                // 3. ปุ่มแอดมิน (เห็นเฉพาะ แอดมิน)
+                                //ปุ่มแอดมิน
                                 if (role == 'admin') ...[
                                   _buildMenuButton(
                                     title: "จัดการยศผู้ใช้ (แอดมิน)",
@@ -286,7 +282,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                   const SizedBox(height: 40),
 
-                  // ปุ่มออกจากระบบ (สีแดง)
+                  // ปุ่มออกจากระบบ
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 50.0),
                     child: SizedBox(
@@ -310,14 +306,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ],
       ),
 
-      /// --- แถบเมนูด้านล่าง ---
+      //แถบเมนูด้านล่าง
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: _buildCameraButton(context),
       bottomNavigationBar: _buildBottomNavBar(context),
     );
   }
 
-  // 📌 Widget ช่วยสร้างปุ่มเมนูให้เรียบร้อยและเรียกใช้ซ้ำได้
   Widget _buildMenuButton({required String title, required Color bgColor, required Color textColor, IconData? icon, required VoidCallback onTap}) {
     return GestureDetector(
       onTap: onTap,

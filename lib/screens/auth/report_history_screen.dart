@@ -3,10 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:convert';
 
-
-// ==========================================
-// หน้า 1: หน้ารายการประวัติการรายงานทั้งหมด
-// ==========================================
+//รายการประวัติการรายงานทั้งหมด
 class ReportHistoryScreen extends StatefulWidget {
   const ReportHistoryScreen({super.key});
   
@@ -17,7 +14,7 @@ class ReportHistoryScreen extends StatefulWidget {
 class _ReportHistoryScreenState extends State<ReportHistoryScreen> {
   final User? currentUser = FirebaseAuth.instance.currentUser;
 
-  // ฟังก์ชันช่วยจัดรูปแบบวันที่ (ไม่ต้องลงแพ็กเกจเพิ่ม)
+  // ฟังก์ชันช่วยจัดรูปแบบวันที่
   String _formatDate(Timestamp? timestamp) {
     if (timestamp == null) return 'กำลังอัปเดต...';
     DateTime date = timestamp.toDate();
@@ -208,9 +205,7 @@ class _ReportHistoryScreenState extends State<ReportHistoryScreen> {
   }
 }
 
-// ==========================================
-// หน้า 2: หน้ารายละเอียดการรายงาน (คลิกจากการ์ด)
-// ==========================================
+//หน้ารายละเอียดการรายงาน (คลิกจากการ์ดในหน้ารายการ)
 class ReportDetailScreen extends StatelessWidget {
   final Map<String, dynamic> reportData;
 
@@ -320,7 +315,7 @@ class ReportDetailScreen extends StatelessWidget {
     );
   }
 
-  // Widget ช่วยสร้างบรรทัดข้อมูล
+  // ช่วยสร้างบรรทัดข้อมูล
   Widget _buildDetailRow(IconData icon, String title, String value) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),

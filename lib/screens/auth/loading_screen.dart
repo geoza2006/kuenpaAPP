@@ -49,7 +49,6 @@ class _LoadingScreenState extends State<LoadingScreen> with SingleTickerProvider
 
   @override
   Widget build(BuildContext context) {
-    // ... โค้ดส่วน UI ของคุณเหมือนเดิมเป๊ะ ไม่ต้องแก้เลยครับ ...
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(

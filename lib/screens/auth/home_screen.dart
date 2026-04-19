@@ -17,9 +17,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // ---------------------------------------------------------
-  // 1. Mock Data สำหรับส่วนที่แอดมินสามารถจัดการได้ (ดึงจาก Backend ในอนาคต)
-  // ---------------------------------------------------------
   
   // ข้อมูลสไลด์บาร์
   final List<String> sliderImages = [
@@ -84,7 +81,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(height: 20),
 
-                // ส่วนที่ 3: 4 ปุ่มหลัก (กริด)
                 Row(
                   children: [
                     Expanded(child: _buildGridButton('เบอร์ติดต่อฉุกเฉิน', 'assets/images/turtle_main.jpg', () {
@@ -122,7 +118,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(height: 25),
 
-                // ส่วนที่ 4: มินิเกม (หัวข้อ)
                 const Text(
                   'มินิเกม',
                   style: TextStyle(
@@ -143,17 +138,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       miniGameCategories[index]['title']!,
                       miniGameCategories[index]['image']!,
                       () {
-                        //2. เช็คจาก index ว่าผู้ใช้กดปุ่มไหน เพื่อให้ไปหน้าแยกกัน
                         Widget targetScreen;
                         
                         if (index == 0) {
-                          // index 0 คือกล่องบนสุด (สัตว์ป่าสงวน)
+                          // index 0 คือกล่องบนสุด
                           targetScreen = const MiniGameScreen1();
                         } else if (index == 1) {
-                          // index 1 คือกล่องตรงกลาง (เต่าทะเล)
+                          // index 1 คือกล่องตรงกลาง
                           targetScreen = const MiniGameScreen3(); // ใส่ 1 ไว้ชั่วคราวกันแอปแดง
                         } else {
-                          // index 2 คือกล่องล่างสุด (นกเงือก)
+                          // index 2 คือกล่องล่างสุด
                           targetScreen = const MiniGameScreen2(); // ใส่ 1 ไว้ชั่วคราวกันแอปแดง
                         }
 
@@ -174,9 +168,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
 
-      // ---------------------------------------------------------
-      // ส่วนที่ 5: Bottom Navigation Bar
-      // ---------------------------------------------------------
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Container(
         height: 70,
@@ -229,9 +220,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // ---------------------------------------------------------
-  // Widget Builder Functions
-  // ---------------------------------------------------------
   Widget _buildGridButton(String title, String imagePath, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,

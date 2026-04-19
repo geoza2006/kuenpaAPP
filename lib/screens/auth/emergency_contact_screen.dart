@@ -11,9 +11,6 @@ class EmergencyContactScreen extends StatefulWidget {
 }
 
 class _EmergencyContactScreenState extends State<EmergencyContactScreen> {
-  // ---------------------------------------------------------
-  // Mock Data: ข้อมูลเบอร์ติดต่อที่แอดมินสามารถเพิ่ม/ลบ/แก้ไขได้จากหลังบ้าน
-  // ---------------------------------------------------------
   final List<Map<String, String>> emergencyContacts = [
     {'number': '1362', 'name': 'สายด่วนอุทยาน'},
     {'number': '1136', 'name': 'บก.ปทส.'},
@@ -23,13 +20,7 @@ class _EmergencyContactScreenState extends State<EmergencyContactScreen> {
     {'number': '032-476-134', 'name': 'มูลนิธิเพื่อนสัตว์ป่า'},
   ];
 
-  // final AudioPlayer _audioPlayer = AudioPlayer(); // สำหรับเล่นเสียง SOS
-
-  // ---------------------------------------------------------
-  // ฟังก์ชัน: โทรออก
-  // ---------------------------------------------------------
   Future<void> _makePhoneCall(String phoneNumber) async {
-    // ลบขีดกลางออกก่อนโทร (เผื่อระบบโทรศัพท์บางเครื่องไม่รองรับ)
     final String cleanNumber = phoneNumber.replaceAll('-', '');
     final Uri launchUri = Uri(scheme: 'tel', path: cleanNumber);
     
@@ -42,23 +33,14 @@ class _EmergencyContactScreenState extends State<EmergencyContactScreen> {
     }
   }
 
-  // ---------------------------------------------------------
-  // ฟังก์ชัน: กดปุ่ม SOS
-  // ---------------------------------------------------------
   Future<void> _handleSOS() async {
-    // 1. ขอสิทธิ์การเข้าถึงที่จำเป็น (ตำแหน่ง, โทรศัพท์)
+    // 1. ขอสิทธิ์การเข้าถึงที่จำเป็น
     Map<Permission, PermissionStatus> statuses = await [
       Permission.location,
       Permission.phone,
     ].request();
 
     if (statuses[Permission.location]!.isGranted) {
-      // 2. ดึงตำแหน่งปัจจุบัน (ต้องใช้ geolocator เพิ่มถ้าต้องการพิกัดจริง)
-      
-      // 3. เล่นเสียงแจ้งเตือนดังๆ
-      // await _audioPlayer.play(AssetSource('sounds/alarm.mp3')); // เตรียมไฟล์เสียงใน assets
-      
-      // 4. ส่งข้อมูลแจ้งเตือนไปยังระบบของแอดมิน (API Call)
       print("ส่งพิกัดและการแจ้งเตือนฉุกเฉินไปยังแอดมินแล้ว!");
 
       // แสดง Dialog แจ้งผู้ใช้
@@ -95,7 +77,7 @@ class _EmergencyContactScreenState extends State<EmergencyContactScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // ส่วนที่ 1: ปุ่มย้อนกลับ
+            //ปุ่มย้อนกลับ
             Padding(
               padding: const EdgeInsets.only(left: 16.0, top: 16.0),
               child: Align(
@@ -114,7 +96,7 @@ class _EmergencyContactScreenState extends State<EmergencyContactScreen> {
               ),
             ),
 
-            // ส่วนที่ 2: หัวข้อ และ ปุ่ม SOS
+            //หัวข้อ และ ปุ่ม SOS
             const Text(
               'ติดต่อฉุกเฉิน',
               style: TextStyle(
@@ -153,7 +135,7 @@ class _EmergencyContactScreenState extends State<EmergencyContactScreen> {
             ),
             const SizedBox(height: 30),
 
-            // ส่วนที่ 3: ลิสต์เบอร์ติดต่อฉุกเฉิน
+            //ลิสต์เบอร์ติดต่อฉุกเฉิน
             Expanded(
               child: ListView.builder(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -206,14 +188,11 @@ class _EmergencyContactScreenState extends State<EmergencyContactScreen> {
                 },
               ),
             ),
-            const SizedBox(height: 30), // เว้นระยะให้ Bottom Navigation
+            const SizedBox(height: 30), 
           ],
         ),
       ),
 
-      // ---------------------------------------------------------
-      // ส่วนที่ 4: Bottom Navigation Bar แบบเดียวกับหน้า Home
-      // ---------------------------------------------------------
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Container(
         height: 70,

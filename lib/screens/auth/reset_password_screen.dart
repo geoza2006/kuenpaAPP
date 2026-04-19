@@ -16,7 +16,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   bool _obscureNewPassword = true;
   bool _obscureConfirmPassword = true;
 
-  // ฟังก์ชันจำลองการบันทึกรหัสผ่านใหม่
+  // จำลองการบันทึกรหัสผ่านใหม่
   void _resetPassword() {
     final newPass = _newPasswordController.text;
     final confirmPass = _confirmPasswordController.text;
@@ -29,17 +29,17 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     }
 
     if (newPass != confirmPass) {
-      // ถ้ารหัสผ่านไม่ตรงกัน ให้เรียกป๊อปอัพแจ้งเตือน
+      // ถ้ารหัสผ่านตรงกัน เรียกป๊อปอัพแจ้งเตือน
       _showMismatchDialog();
       return;
     }
 
-    // ถ้าผ่านเงื่อนไข (สมมติว่าอัพเดทขึ้น Firebase สำเร็จ)
+    // ถ้าผ่านเงื่อนไข
     // เรียกป๊อปอัพแจ้งเตือนว่าสำเร็จ
     _showSuccessDialog();
   }
 
-  // --- ป๊อปอัพ: รหัสผ่านไม่ตรงกัน ---
+  // ป๊อปอัพรหัสผ่านไม่ตรงกัน
   void _showMismatchDialog() {
     showDialog(
       context: context,
@@ -122,7 +122,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     );
   }
 
-  // --- ป๊อปอัพ: รีเซ็ทรหัสผ่านสำเร็จ ---
+  // ป๊อปอัพรีเซ็ทรหัสผ่านสำเร็จ 
   void _showSuccessDialog() {
     showDialog(
       context: context,
@@ -176,7 +176,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                        // กลับไปหน้าแรกสุด (หน้า Login)
+                        // กลับไปหน้า Login
                         Navigator.popUntil(context, (route) => route.isFirst);
                       },
                       style: ElevatedButton.styleFrom(
@@ -195,7 +195,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                     ),
                     OutlinedButton(
                       onPressed: () {
-                        // กลับไปหน้าแรกสุด (หน้า Login)
+                        // กลับไปหน้า Login
                         Navigator.popUntil(context, (route) => route.isFirst);
                       },
                       style: OutlinedButton.styleFrom(
@@ -261,7 +261,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 ),
                 const SizedBox(height: 24),
 
-                // ไอคอนซองจดหมายและแม่กุญแจ
+                // ไอคอนซองจดหมาย
                 SizedBox(
                   height: 100,
                   width: 120,

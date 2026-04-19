@@ -3,9 +3,6 @@ import 'home_screen.dart';
 import 'report_screen.dart';
 import 'profile_screen.dart';
 
-// =========================================================
-// --- Models สำหรับเก็บข้อมูลเกร็ดความรู้ ---
-// ==================================================
 class AnimalItem {
   final String name;
   final String imageUrl;
@@ -34,9 +31,6 @@ class KnowledgeCategory {
   });
 }
 
-// =========================================================
-// หน้าจอที่ 1: หน้าหมวดหมู่เกร็ดความรู้ (Knowledge Screen)
-// =========================================================
 class KnowledgeScreen extends StatefulWidget {
   const KnowledgeScreen({super.key});
 
@@ -45,7 +39,7 @@ class KnowledgeScreen extends StatefulWidget {
 }
 
 class _KnowledgeScreenState extends State<KnowledgeScreen> {
-  // --- ข้อมูลจำลอง (Mock Data) ---
+  //ข้อมูลจำลอง
   final List<KnowledgeCategory> categories = [
     KnowledgeCategory(
       title: 'สัตว์ป่าสงวนของไทย\nTHAILAND\'S RESERVED WILDLIFE',
@@ -54,7 +48,6 @@ class _KnowledgeScreenState extends State<KnowledgeScreen> {
           'โดยมีการอัปเดตเพิ่มเติมนกชนหินและวาฬสีน้ำเงินเข้ามาเป็นสมาชิกล่าสุดตามกฎหมาย '
           'เพื่อยกระดับการอนุรักษ์อย่างเข้มงวด',
       groups: [
-        // 📌 กลุ่มที่ 1: สัตว์เลี้ยงลูกด้วยนม
         AnimalGroup(
           groupName: '🦌 จำพวกสัตว์เลี้ยงลูกด้วยนม (15 ชนิด)',
           animals: [
@@ -74,9 +67,7 @@ class _KnowledgeScreenState extends State<KnowledgeScreen> {
             AnimalItem(name: '14. สมัน หรือ เนื้อสมัน (Schomburgk Deer)', imageUrl: 'assets/images/k1_animal14.jpg'),
             AnimalItem(name: '15. สมเสร็จ (Malayan Tapir)', imageUrl: 'assets/images/k1_animal15.jpg'),
           ],
-        ), // ✅ ปิดกลุ่มที่ 1 ตรงนี้
-
-        // 📌 กลุ่มที่ 2: นก
+        ),
         AnimalGroup(
           groupName: '🦅 จำพวกนก (4 ชนิด)',
           animals: [
@@ -85,17 +76,14 @@ class _KnowledgeScreenState extends State<KnowledgeScreen> {
             AnimalItem(name: '18. นกแต้วแล้วท้องดำ (Gurney Pitta)', imageUrl: 'assets/images/k1_animal18.jpg'),
             AnimalItem(name: '19. นกชนหิน (Helmeted Hornbill)', imageUrl: 'assets/images/k1_animal19.jpg'),
           ],
-        ), // ✅ ปิดกลุ่มที่ 2 ตรงนี้
-
-        // 📌 กลุ่มที่ 3: สัตว์เลื้อยคลาน
+        ), 
         AnimalGroup(
           groupName: '🐢 จำพวกสัตว์เลื้อยคลาน (1 ชนิด)',
           animals: [
             AnimalItem(name: '20. เต่ามะเฟือง (Leatherback Sea Turtle)', imageUrl: 'assets/images/k1_animal20.jpg'),
           ],
-        ), // ✅ ปิดกลุ่มที่ 3 ตรงนี้
+        ),
 
-        // 📌 กลุ่มที่ 4: ปลา
         AnimalGroup(
           groupName: '🦈 จำพวกปลา (1 ชนิด)',
           animals: [
@@ -109,7 +97,6 @@ class _KnowledgeScreenState extends State<KnowledgeScreen> {
       coverImageUrl: 'assets/images/k2_turtles.png',
       description: 'เต่าทะเลในน่านน้ำไทยพบทั้งหมด 5 ชนิด ทุกชนิดจัดเป็นสัตว์ป่าคุ้มครอง และบางชนิด (เช่น เต่ามะเฟือง) ได้รับการยกระดับเป็นสัตว์ป่าสงวน เนื่องจากเสี่ยงต่อการสูญพันธุ์อย่างยิ่ง',
       groups: [
-        // 📌 เติมกลุ่มและรายชื่อเต่าทะเลเข้าไปตรงนี้
         AnimalGroup(
           groupName: '🐢 สายพันธุ์เต่าทะเลที่พบในไทย (5 ชนิด)',
           animals: [
@@ -120,7 +107,7 @@ class _KnowledgeScreenState extends State<KnowledgeScreen> {
             AnimalItem(name: '5. เต่าหัวค้อน (Loggerhead Turtle)', imageUrl: 'assets/images/k2_turtle5.jpg'),
           ],
         ),
-      ], // ปิด groups
+      ], 
     ),
     KnowledgeCategory(
       title: 'นกเงือกของไทย\nTHAILAND\'S HORNBILLS',
@@ -170,7 +157,6 @@ class _KnowledgeScreenState extends State<KnowledgeScreen> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // หัวข้อ "เกร็ดความรู้"
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             child: Text(
@@ -178,8 +164,6 @@ class _KnowledgeScreenState extends State<KnowledgeScreen> {
               style: TextStyle(fontSize: 28, fontWeight: FontWeight.w900, color: Colors.black),
             ),
           ),
-          
-          // รายการหมวดหมู่ (หน้าปก)
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.only(bottom: 100, left: 16, right: 16), // เว้นให้แถบล่าง
@@ -225,7 +209,6 @@ class _KnowledgeScreenState extends State<KnowledgeScreen> {
                             ),
                           ),
                         ),
-                        // ป้ายชื่อหมวดหมู่ด้านล่าง (จำลองดีไซน์ในรูป)
                         Container(
                           margin: const EdgeInsets.only(bottom: 10),
                           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
@@ -252,7 +235,7 @@ class _KnowledgeScreenState extends State<KnowledgeScreen> {
           ),
         ],
       ),
-      // --- แถบเมนูด้านล่าง ---
+      //แถบเมนูด้านล่าง
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: _buildCameraButton(),
       bottomNavigationBar: _buildBottomNavBar(),
@@ -295,7 +278,6 @@ class _KnowledgeScreenState extends State<KnowledgeScreen> {
             IconButton(
               icon: const Icon(Icons.home, color: Colors.white, size: 35), 
               onPressed: () {
-                // 📌 ใช้ pushAndRemoveUntil เพื่อล้าง stack ป้องกันแอปหนัก
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(builder: (context) => const HomeScreen()),
@@ -307,13 +289,10 @@ class _KnowledgeScreenState extends State<KnowledgeScreen> {
             IconButton(
               icon: const Icon(Icons.account_circle, color: Colors.white, size: 35), 
               onPressed: () {
-                // 📌 TODO: นำคอมเมนต์ออกเมื่อสร้างหน้า ProfileScreen เสร็จแล้ว
-                /*
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const ProfileScreen()),
                 );
-                */
               }
             ),
           ],
@@ -323,9 +302,6 @@ class _KnowledgeScreenState extends State<KnowledgeScreen> {
   }
 }
 
-// =========================================================
-// หน้าจอที่ 2: หน้ารายละเอียดหมวดหมู่ (Knowledge Detail Screen)
-// =========================================================
 class KnowledgeDetailScreen extends StatelessWidget {
   final KnowledgeCategory category;
 
@@ -354,7 +330,6 @@ class KnowledgeDetailScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // หัวข้อหลัก (เช่น สัตว์ป่าสงวนของไทย)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Text(
@@ -363,8 +338,7 @@ class KnowledgeDetailScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 12),
-            
-            // คำอธิบาย
+
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Text(
@@ -420,21 +394,21 @@ class KnowledgeDetailScreen extends StatelessWidget {
                         ],
                       ),
                     );
-                  }).toList(), // จบลูปสัตว์
+                  }).toList(),
                 ],
               );
-            }).toList(), // จบลูปกลุ่มสัตว์
+            }).toList(),
           ],
         ),
       ),
-      // --- แถบเมนูด้านล่าง ---
+      // แถบเมนูด้านล่าง
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: _buildCameraButton(context),
       bottomNavigationBar: _buildBottomNavBar(context)
     );
   }
 
-  // แยก Widget ปุ่มกล้องและ Nav Bar ออกมาเพื่อให้โค้ดอ่านง่ายขึ้นครับ
+  // แยก Widget ปุ่มกล้องและ Nav Bar
   Widget _buildCameraButton(BuildContext context) {
     return Container(
       height: 75, width: 75, margin: const EdgeInsets.only(top: 30),

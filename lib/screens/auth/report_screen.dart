@@ -45,8 +45,6 @@ class _ReportScreenState extends State<ReportScreen> {
 
   // ฟังก์ชันถ่ายรูป/เลือกรูป
   Future getImage() async {
-  // 📌 เพิ่ม maxWidth และ maxHeight เพื่อให้รูปเล็กลงแต่ยังชัดพออ่านรู้เรื่อง
-  // และกำหนด imageQuality เพื่อบีบอัดไฟล์
   final pickedFile = await picker.pickImage(
     source: ImageSource.camera,
     maxWidth: 800,      // จำกัดความกว้าง
@@ -61,9 +59,6 @@ class _ReportScreenState extends State<ReportScreen> {
   });
   }
 
-  // --------------------------------------------------------
-  // 📌 ฟังก์ชันส่งข้อมูลเข้า Firebase
-  // --------------------------------------------------------
 Future<void> _submitReportToFirebase() async {
     if (_titleController.text.isEmpty || _locationController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -85,7 +80,6 @@ Future<void> _submitReportToFirebase() async {
       String base64Image = '';
       final user = FirebaseAuth.instance.currentUser;
 
-      // 📌 ถ่ายรูปมาปุ๊บ แปลงเป็นข้อความ Base64 ปั๊บ (ไม่ต้องง้อ Storage)
       if (_image != null) {
         final bytes = await _image!.readAsBytes();
         base64Image = base64Encode(bytes);
@@ -93,7 +87,7 @@ Future<void> _submitReportToFirebase() async {
 
       LatLng currentMarkerPos = _markers.isNotEmpty ? _markers.first.position : _initialPosition;
 
-      // บันทึกลง Firestore เลย
+      // บันทึกลง Firestore
       await FirebaseFirestore.instance.collection('reports').add({
         'userId': user?.uid ?? 'unknown',
         'title': _titleController.text.trim(),
@@ -103,7 +97,7 @@ Future<void> _submitReportToFirebase() async {
         'latitude': currentMarkerPos.latitude,
         'longitude': currentMarkerPos.longitude,
         'details': _detailController.text.trim(),
-        'imageBase64': base64Image, // 📌 เก็บเป็นตัวอักษรแทน URL รูป
+        'imageBase64': base64Image, //เก็บเป็นตัวอักษรแทน URL รูป
         'status': 'รอดำเนินการ',
         'createdAt': FieldValue.serverTimestamp(),
       });
@@ -116,10 +110,6 @@ Future<void> _submitReportToFirebase() async {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
     }
   }
-
-  // --------------------------------------------------------
-  // ฟังก์ชันล้างข้อมูลหลังจากส่งเสร็จสิ้น
-  // --------------------------------------------------------
   void _resetForm() {
     setState(() {
       _titleController.clear();
@@ -140,9 +130,6 @@ Future<void> _submitReportToFirebase() async {
     });
   }
 
-  // --------------------------------------------------------
-  // Popup 1: ยืนยันการรายงาน
-  // --------------------------------------------------------
   void _showConfirmationDialog() {
     showDialog(
       context: context,
@@ -178,9 +165,7 @@ Future<void> _submitReportToFirebase() async {
     );
   }
 
-  // --------------------------------------------------------
-  // Popup 2: ส่งรายงานเรียบร้อยแล้ว
-  // --------------------------------------------------------
+  // Popup ส่งรายงานเรียบร้อย
   void _showSuccessDialog() {
     showDialog(
       context: context,

@@ -29,11 +29,9 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
         useMaterial3: true,
       ),
-      // 📌 3. ใช้ StreamBuilder ครอบไว้เพื่อเช็คว่าล็อกอินอยู่หรือไม่
       home: StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
-          // 1. ระหว่างรอ Firebase เช็คข้อมูล (ปกติจะเร็วมาก) 
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Scaffold(
               backgroundColor: Colors.white,
@@ -41,14 +39,9 @@ class MyApp extends StatelessWidget {
             );
           }
 
-          //ถ้า Firebase พบว่า "เคยล็อกอินไว้แล้ว"
-          // ให้เรียกหน้า LoadingScreen แล้วแอบส่ง HomeScreen() ไปรอไว้
           if (snapshot.hasData) {
             return const LoadingScreen(nextPage: HomeScreen()); 
           }
-
-          //ถ้า "ยังไม่ได้ล็อกอิน" หรือเพิ่งโหลดแอปครั้งแรก
-          // ให้เรียกหน้า LoadingScreen แล้วส่ง LoginScreen() ไปรอไว้
           return const LoadingScreen(nextPage: LoginScreen());
         },
       ),

@@ -19,7 +19,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _obscurePassword = true;
   // ตัวแปรจดจำฉัน
   bool _rememberMe = false;
-  // ตัวแปรจัดการภาษา (true = ไทย, false = อังกฤษ)
+  // ตัวแปรจัดการภาษา
   bool _isThai = true;
 
   // ฟังก์ชันแสดงป๊อปอัพเมื่อรหัสผ่านหรืออีเมลไม่ถูกต้อง
@@ -129,11 +129,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // โลโก้ (เปลี่ยนที่อยู่ไฟล์รูปของคุณตรงนี้)
+                    // โลโก้
                     Image.asset('assets/images/logo.png', height: 200),
                     
-                    // ปล่อยกล่องสี่เหลี่ยมไว้แทนรูปชั่วคราว
-                    // ช่องกรอกชื่อผู้ใช้ (หรือ Email)
+                    // ปล่อยกล่องสี่เหลี่ยมไว้แทนรูป
+                    // ช่องกรอกชื่อผู้ใช้
                     TextFormField(
                       controller: _emailController,
                       decoration: InputDecoration(
@@ -243,7 +243,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               password: _passwordController.text.trim(), // ดึงค่าจากช่องรหัสผ่าน
                             );
                             
-                            // 2. ถ้าล็อคอินสำเร็จ จะมาทำงานตรงนี้ (ไปหน้า Home ทันที)
+                            // 2. ถ้าล็อคอินสำเร็จ จะนำทางไปหน้า Home
                             if (context.mounted) {
                               Navigator.pushReplacement(
                                 context,
@@ -253,8 +253,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               );
                             }
                           } on FirebaseAuthException catch (e) {
-                            // 3. ถ้าล็อคอินไม่สำเร็จ (รหัสผิด หรือ อีเมลไม่ถูกต้อง) จะเด้งมาตรงนี้
-                            print('Login Failed: ${e.code}'); // พิมพ์บอกใน Console ว่าเออเร่ออะไร
+                            // 3. ถ้าล็อคอินไม่สำเร็จจะเด้งมาตรงนี้
+                            print('Login Failed: ${e.code}');
                             _showErrorDialog(); // แสดงป๊อปอัพแจ้งเตือน
                           }
                         },

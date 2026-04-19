@@ -14,7 +14,6 @@ class OfficerDashboardScreen extends StatelessWidget {
     );
   }
 
-  // เลือกสีตามสถานะ
   Color _getStatusColor(String status) {
     switch (status) {
       case 'รอดำเนินการ': return Colors.orange;
@@ -33,7 +32,7 @@ class OfficerDashboardScreen extends StatelessWidget {
         backgroundColor: Colors.blue[800], // สีน้ำเงินสำหรับเจ้าหน้าที่
       ),
       body: StreamBuilder<QuerySnapshot>(
-        // ดึงรายงานทั้งหมด เรียงจากใหม่ไปเก่า
+        // ดึงรายงานทั้งหมด
         stream: FirebaseFirestore.instance.collection('reports').orderBy('createdAt', descending: true).snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -67,7 +66,6 @@ class OfficerDashboardScreen extends StatelessWidget {
                     child: const Icon(Icons.edit, color: Colors.white, size: 20),
                   ),
                   onTap: () {
-                    // กดแล้วเด้ง Dialog ให้อัปเดตสถานะ
                     _showStatusUpdateDialog(context, docId, title, status);
                   },
                 ),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-// Enum สำหรับจัดการสถานะของหน้าจอ
 enum GameState { playing, correct, wrong }
 
 class MiniGameScreen1 extends StatefulWidget {
@@ -12,10 +11,10 @@ class MiniGameScreen1 extends StatefulWidget {
 }
 
 class _MiniGameScreenState extends State<MiniGameScreen1> {
-  // สถานะเริ่มต้นคือ 'กำลังเล่น'
+  // สถานะเริ่มต้นกำลังเล่น
   GameState _gameState = GameState.playing;
 
-  // --- ข้อมูลจำลองของคำถาม ---
+  // ข้อมูลจำลองของคำถาม
   final String questionImage = 'assets/images/tapir.jpg';
   final String correctAnswer = 'สมเสร็จ';
   
@@ -39,7 +38,7 @@ class _MiniGameScreenState extends State<MiniGameScreen1> {
       }
     });
 
-    // หน่วงเวลา 3 วินาทีแล้วกลับมาหน้าเล่นเกมต่อ (หรือจะให้เปลี่ยนข้อก็ได้)
+    // หน่วงเวลา 3 วินาทีแล้วกลับมาหน้าเล่นเกมต่อ
     Timer(const Duration(seconds: 3), () {
       if (mounted) {
         setState(() {
@@ -84,9 +83,6 @@ class _MiniGameScreenState extends State<MiniGameScreen1> {
     );
   }
 
-  // ==========================================
-  // ส่วนแสดงเนื้อหาตรงกลางจอ
-  // ==========================================
   Widget _buildBody() {
     if (_gameState == GameState.correct) {
       // หน้าตอบถูก
@@ -143,7 +139,7 @@ class _MiniGameScreenState extends State<MiniGameScreen1> {
           ),
           const SizedBox(height: 24),
           
-          // ปุ่มตัวเลือก (Grid 2x2)
+          // ปุ่มตัวเลือก
           Expanded(
             child: Column(
               children: [
@@ -195,9 +191,6 @@ class _MiniGameScreenState extends State<MiniGameScreen1> {
     );
   }
 
-  // ==========================================
-  // ส่วน Bottom Nav Bar & FAB (เปลี่ยนสีตาม State)
-  // ==========================================
   Widget _buildFAB() {
     Color fabBgColor;
     Color iconColor;

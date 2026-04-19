@@ -9,10 +9,8 @@ class ForgotPasswordScreen extends StatefulWidget {
 }
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
-  // สร้าง Controller เพื่อรับค่าอีเมลที่ผู้ใช้พิมพ์
   final TextEditingController _emailController = TextEditingController();
 
-  // ฟังก์ชันจำลองการส่งลิงก์รีเซ็ตรหัสผ่าน
   void _sendResetLink() {
     final email = _emailController.text.trim();
     if (email.isEmpty) {
@@ -23,7 +21,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       return;
     }
 
-    // --- จำลองระบบตรวจสอบอีเมล ---
     // สมมติว่าถ้าผู้ใช้ไม่ได้พิมพ์ตัว "@" จะถือว่าไม่มีอีเมลนี้ในระบบ
     bool isEmailFound = email.contains('@');
 
@@ -31,10 +28,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       // ถ้าไม่พบอีเมล ให้เรียกแสดงป๊อปอัพแจ้งเตือน
       _showErrorDialog();
     } else {
-      // โค้ดจริงๆ จะใช้ประมาณนี้เมื่อต่อกับ Firebase:
-      // await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
-
-      // แสดงแจ้งเตือนจำลองว่าส่งสำเร็จ
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -54,7 +47,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     }
   }
 
-  // --- ฟังก์ชันสร้างป๊อปอัพ "ไม่พบอีเมล!" ตามแบบ UI ---
+  //ฟังก์ชันสร้างป๊อปอัพ "ไม่พบอีเมล"
   void _showErrorDialog() {
     showDialog(
       context: context,
@@ -162,7 +155,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // โลโก้ KuenPa ด้านบน
+                // โลโก้ KuenPa
                 Image.asset('assets/images/logo.png', height: 150),
 
                 // ไอคอนแม่กุญแจใบไม้

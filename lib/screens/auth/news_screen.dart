@@ -3,7 +3,7 @@ import 'home_screen.dart';
 import 'report_screen.dart';
 import 'profile_screen.dart';
 
-// --- Model สำหรับเก็บข้อมูลข่าว ---
+//Model สำหรับเก็บข้อมูลข่าว
 class NewsArticle {
   final String title;
   final String imageUrl;
@@ -24,9 +24,7 @@ class NewsArticle {
   });
 }
 
-// =========================================================
-// หน้าจอที่ 1: หน้ารายการข่าวสาร (News Screen)
-// =========================================================
+//หน้ารายการข่าวสาร
 class NewsScreen extends StatefulWidget {
   const NewsScreen({super.key});
 
@@ -35,7 +33,7 @@ class NewsScreen extends StatefulWidget {
 }
 
 class _NewsScreenState extends State<NewsScreen> {
-  // --- ข้อมูลจำลอง (Mock Data) ---
+  //ข้อมูลจำลอง
   final List<NewsArticle> newsList = [
     NewsArticle(
       title: '1 ทศวรรษพญาแร้งคืนถิ่น 8 มีนาคม 2569กรมอุทยานแห่งชาติฯ \nชี้แจงกรณี “เหี้ย” สัตว์ป่าคุ้มครองเพาะพันธุ์ได้ ไม่ใช่ใครก็เลี้ยงได้ ต้องขออนุญาตและตรงตามเงื่อนไขที่กำหนดเท่านั้น!',
@@ -92,7 +90,7 @@ class _NewsScreenState extends State<NewsScreen> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // หัวข้อ "ข่าวสารสัตว์ป่า"
+          // หัวข้อข่าวสารสัตว์ป่า
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             child: Text(
@@ -134,7 +132,7 @@ class _NewsScreenState extends State<NewsScreen> {
                             width: 140,
                             height: 120,
                             fit: BoxFit.cover,
-                            // ถ้าหารูปไม่เจอให้โชว์กล่องสีเทาแทนไปก่อน
+                            // ถ้าหารูปไม่เจอให้โชว์กล่องสีเทาแทน
                             errorBuilder: (context, error, stackTrace) => Container(
                               width: 140, height: 120, color: Colors.grey,
                               child: const Icon(Icons.image, color: Colors.white),
@@ -167,7 +165,7 @@ class _NewsScreenState extends State<NewsScreen> {
           ),
         ],
       ),
-      // --- แถบเมนูด้านล่าง (นำมาจากหน้าประวัติ) ---
+      //แถบเมนูด้านล่าง
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Container(
         height: 75,
@@ -219,9 +217,7 @@ class _NewsScreenState extends State<NewsScreen> {
   }
 }
 
-// =========================================================
-// หน้าจอที่ 2: หน้ารายละเอียดข่าว (News Detail Screen)
-// =========================================================
+//หน้ารายละเอียดข่าว
 class NewsDetailScreen extends StatelessWidget {
   final NewsArticle article;
 
@@ -262,7 +258,7 @@ class NewsDetailScreen extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               
-              // ข้อมูลสถิติ (หมวดหมู่ - วันที่ - ยอดวิว - ยอดแชร์)
+              // ข้อมูลสถิติ
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -305,7 +301,7 @@ class NewsDetailScreen extends StatelessWidget {
           ),
         ),
       ),
-      // --- แถบเมนูด้านล่าง (ให้โชว์ในหน้ารายละเอียดด้วยตามดีไซน์) ---
+      //แถบเมนูด้านล่าง
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Container(
         height: 75,

@@ -3,7 +3,6 @@ import 'home_screen.dart';
 import 'report_screen.dart';
 import 'profile_screen.dart';
 
-// --- สร้าง Model สำหรับจำลองข้อมูล ---
 class EncounterLocation {
   final String locationName;
   final List<EncounterAnimal> animals; // 1 สถานที่ มีสัตว์ได้หลายตัว
@@ -26,7 +25,6 @@ class HistoryScreen extends StatefulWidget {
 }
 
 class _HistoryScreenState extends State<HistoryScreen> {
-  // --- จำลองข้อมูล (Mock Data) สถานที่และสัตว์ป่าที่เจอ ---
   final List<EncounterLocation> historyData = [
     EncounterLocation(
       locationName: "อุทยานแห่งชาติสิรินาถ จ.ภูเก็ต",
@@ -76,11 +74,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
             InteractiveViewer(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(15),
-                // ⚠️ แก้ตรงนี้เป็น Image.asset ⚠️
                 child: Image.asset(animal.imageUrl, fit: BoxFit.contain),
               ),
             ),
-            // ปุ่มปิด (กากบาท)
+            // ปุ่มปิด
             Positioned(
               top: -10,
               right: 0,
@@ -100,7 +97,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       
-      // --- แถบด้านบน (AppBar) ---
+      //แถบด้านบน
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -124,7 +121,6 @@ class _HistoryScreenState extends State<HistoryScreen> {
         ),
       ),
 
-      // --- เนื้อหาหลัก (รายการสถานที่) ---
       body: ListView.builder(
         padding: const EdgeInsets.only(bottom: 100), // เว้นที่ให้แถบเมนูด้านล่าง
         itemCount: historyData.length,
@@ -136,7 +132,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // 1. โชว์หมุดสถานที่
+                //โชว์หมุดสถานที่
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -152,7 +148,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 ),
                 const SizedBox(height: 10),
 
-                // 2. โชว์รูปสัตว์ (ถ้ามีหลายตัว จะเลื่อนซ้ายขวาได้)
+                //โชว์รูปสัตว์ ถ้ามีหลายตัว จะเลื่อนซ้ายขวาได้
                 SizedBox(
                   height: 200, // ความสูงของรูป
                   child: ListView.builder(
@@ -172,13 +168,11 @@ class _HistoryScreenState extends State<HistoryScreen> {
                               // รูปภาพ
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(15),
-                                // ⚠️ แก้ตรงนี้เป็น Image.asset ⚠️
                                 child: Image.asset(
                                   animal.imageUrl,
                                   fit: BoxFit.cover,
                                 ),
                               ),
-                              // แถบดำๆ ดรอปเงาข้างล่างให้อ่านชื่อสัตว์ชัดขึ้น
                               Align(
                                 alignment: Alignment.bottomCenter,
                                 child: Container(
@@ -226,7 +220,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
         },
       ),
 
-      // --- ปุ่มกล้องตรงกลาง (ลอยๆ) ---
+      // ปุ่มกล้องตรงกลาง
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Container(
         height: 75,
@@ -248,7 +242,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
         ),
       ),
 
-      // --- แถบเมนูด้านล่าง (Bottom Navigation Bar) ---
+      //แถบเมนูด้านล่าง
       bottomNavigationBar: BottomAppBar(
         color: const Color(0xFF2E5B2C), // สีเขียวเข้ม
         shape: const CircularNotchedRectangle(),
